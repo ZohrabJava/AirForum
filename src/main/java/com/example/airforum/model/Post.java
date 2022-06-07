@@ -33,6 +33,9 @@ public class Post implements Serializable {
     private Double rating;
     @Column(name = "rating_count", nullable = false)
     private Long ratingCount;
+    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Category category;
 
     public Post(Long id, User user, String title, String descriptionPath, String imagePath, PostState postState,
                 AnswerState answerState, LocalDateTime localDateTime, Double rating, Long ratingCount) {
