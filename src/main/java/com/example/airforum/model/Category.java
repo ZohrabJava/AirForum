@@ -14,6 +14,7 @@ public class Category implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id", nullable = false)
     private Long id;
+    @Enumerated(EnumType.STRING)
     @Column(name = "post_category", nullable = false, unique = true)
     private PostCategoryType postCategory;
 

@@ -5,7 +5,7 @@ import com.example.airforum.dto.userDto.UserResponseDto;
 import com.example.airforum.model.User;
 
 public interface UserService {
-    UserResponseDto creatUser(UserRequestDto user);
+    String creatUser(UserRequestDto user);
     UserResponseDto getByLoginPassword(UserRequestDto user);
 
 }

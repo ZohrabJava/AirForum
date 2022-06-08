@@ -12,6 +12,7 @@ public class Role implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "role_id", nullable = false)
     private Long id;
+    @Enumerated(EnumType.STRING)
     @Column(name = "role", unique = true)
     private Roles roles;
 

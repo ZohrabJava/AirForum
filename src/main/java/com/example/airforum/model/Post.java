@@ -23,8 +23,10 @@ public class Post implements Serializable {
     private String descriptionPath;
     @Column(name = "image_path", nullable = false)
     private String imagePath;
+    @Enumerated(EnumType.STRING)
     @Column(name = "post_state", nullable = false)
     private PostState postState;
+    @Enumerated(EnumType.STRING)
     @Column(name = "answer_state", nullable = false)
     private AnswerState answerState;
     @Column(name = "post_date", nullable = false)
@@ -33,13 +35,21 @@ public class Post implements Serializable {
     private Double rating;
     @Column(name = "rating_count", nullable = false)
     private Long ratingCount;
+    @Enumerated(EnumType.STRING)
     @JoinColumn(name = "category_id", nullable = false)
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Category category;
 
-    public Post(Long id, User user, String title, String descriptionPath, String imagePath, PostState postState,
-                AnswerState answerState, LocalDateTime localDateTime, Double rating, Long ratingCount) {
-        this.id = id;
+    public Post(User user,
+                String title,
+                String descriptionPath,
+                String imagePath,
+                PostState postState,
+                AnswerState answerState,
+                LocalDateTime localDateTime,
+                Double rating,
+                Long ratingCount,
+                Category category) {
         this.user = user;
         this.title = title;
         this.descriptionPath = descriptionPath;
@@ -49,6 +59,7 @@ public class Post implements Serializable {
         this.localDateTime = localDateTime;
         this.rating = rating;
         this.ratingCount = ratingCount;
+        this.category = category;
     }
 
     public Post() {
@@ -129,6 +140,14 @@ public class Post implements Serializable {
 
     public Long getRatingCount() {
         return ratingCount;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public void setRatingCount(Long ratingCount) {
