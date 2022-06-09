@@ -3,6 +3,7 @@ package com.example.airforum.email;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,21 +20,27 @@ public class EmailService implements EmailSender{
     private final static Logger LOGGER = LoggerFactory
             .getLogger(EmailService.class);
 
-    private final JavaMailSenderImpl mailSender=new JavaMailSenderImpl();
-
-
+    private JavaMailSender mailSender;
 
     @Override
     @Async
     public void send(String to, String email) {
         try {
+//            SimpleMailMessage message = new SimpleMailMessage();
+//
+//            message.setFrom("fromemail@gmail.com");
+//            message.setTo(to);
+//            message.setText(email, true);
+//            message.setSubject("Confirm your email");
+//            mailSender.send(message);
+
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper =
                     new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(email, true);
             helper.setTo(to);
             helper.setSubject("Confirm your email");
-            helper.setFrom("hello@amigoscode.com");
+            helper.setFrom("zoro77zz777@gmail.com");
             mailSender.send(mimeMessage);
         } catch (MessagingException e) {
             LOGGER.error("failed to send email", e);

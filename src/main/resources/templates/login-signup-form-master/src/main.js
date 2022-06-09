@@ -39,7 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const userName = document.querySelector("#signupUsername")
         const email = document.querySelector("#email")
         const password = document.querySelector("#password")
-
         // Perform your AJAX/Fetch login
         fetch('http://localhost:8082/forum/user', {
             method: 'POST',
@@ -63,15 +62,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loginForm.addEventListener("submit", e => {
         e.preventDefault();
-
+        const userName = document.querySelector("#signupUsername")
+        const password = document.querySelector("#password")
         // Perform your AJAX/Fetch login
-        // fetch('https://example.com/profile/avatar', {
-        //     method: 'PUT',
-        //     body: formData
+        // fetch('http://localhost:8082/forum/user', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //         'Access-Control-Allow-Origin':'*',
+        //     },
+        //     body: JSON.stringify({
+        //         "userName":userName.value,
+        //         "password":password.value
+        //     })
         // }).then((data) => {
-        //     console.log(data)
-        // });
-
+        //     console.log(data, 555)
         setFormMessage(loginForm, "error", "Invalid username/password combination");
     });
 

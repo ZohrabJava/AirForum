@@ -7,5 +7,6 @@ import com.example.airforum.model.User;
 public interface UserService {
     String creatUser(UserRequestDto user);
     UserResponseDto getByLoginPassword(UserRequestDto user);
+    String confirmToken(String token);
 
 }

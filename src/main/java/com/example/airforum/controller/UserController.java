@@ -3,8 +3,6 @@ package com.example.airforum.controller;
 import com.example.airforum.dto.userDto.UserRequestDto;
 import com.example.airforum.service.UserService;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,4 +18,12 @@ public class UserController {
     public String register(@RequestBody UserRequestDto request) {
         return userService.creatUser(request);
     }
+
+    @GetMapping(path = "confirm")
+    @ResponseBody
+    public String confirm(@RequestParam("token") String token) {
+         userService.confirmToken(token);
+        return "success.html";
+    }
+
 }
