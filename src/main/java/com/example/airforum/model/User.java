@@ -1,5 +1,6 @@
 package com.example.airforum.model;
 
+import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -9,6 +10,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "users")
+@EqualsAndHashCode
 public class User implements Serializable , UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
