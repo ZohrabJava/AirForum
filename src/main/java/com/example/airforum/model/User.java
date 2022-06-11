@@ -10,7 +10,6 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "users")
-@EqualsAndHashCode
 public class User implements Serializable , UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

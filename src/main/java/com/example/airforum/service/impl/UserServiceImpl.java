@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService , UserDetailsService {
                 )
         );
 
-        String link = "http://localhost:8082/forum/user/confirm?token=" + token;
+        String link = "http://localhost:8082/confirm?token=" + token;
         emailSender.send(
                 request.getEmail(),
                 buildEmail(request.getFirstName(), link));

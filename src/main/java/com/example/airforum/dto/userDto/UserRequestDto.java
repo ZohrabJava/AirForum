@@ -1,19 +1,19 @@
 package com.example.airforum.dto.userDto;
 
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.lang.Nullable;
 
-@Getter
 @AllArgsConstructor
+@Setter
+@Getter
+@NoArgsConstructor
 @EqualsAndHashCode
-@ToString
 public class UserRequestDto {
-    private final String firstName;
-    private final String lastName;
-    private final String userName;
-    private final String email;
-    private final String password;
+    private  String firstName;
+    private  String lastName;
+    private  String userName;
+    private  String email;
+    private  String password;
+
 }

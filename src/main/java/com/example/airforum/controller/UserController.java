@@ -3,29 +3,29 @@ package com.example.airforum.controller;
 import com.example.airforum.dto.userDto.UserRequestDto;
 import com.example.airforum.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import javax.swing.text.html.HTMLDocument;
-
-@RestController
+@Controller
 @RequestMapping(path = "forum/user")
 @AllArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
+    @GetMapping("/success")
+    public String viewConfirmPage() {
+        return "success";
+    }
 
     @CrossOrigin(origins = "*")
-    @PostMapping
+    @PostMapping("/creat")
     public String register(@RequestBody UserRequestDto request) {
-        return userService.creatUser(request);
+         userService.creatUser(request);
+         return "redirect:/forum/user/success";
     }
 
-    @GetMapping("/confirm")
-    public String confirm(@RequestParam("token") String token) {
-        userService.confirmToken(token);
-        return "sucess";
-    }
 
 }

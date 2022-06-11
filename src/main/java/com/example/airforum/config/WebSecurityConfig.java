@@ -1,4 +1,4 @@
-package com.example.airforum.security.config;
+package com.example.airforum.config;
 
 import com.example.airforum.service.UserService;
 import com.example.airforum.service.impl.UserServiceImpl;
@@ -26,11 +26,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                    .antMatchers("/forum/user/**")
-                    .permitAll()
-                .anyRequest()
-                .authenticated().and()
-                .formLogin();
+                    .antMatchers("/**")
+                    .permitAll();
+
     }
 
     @Override
