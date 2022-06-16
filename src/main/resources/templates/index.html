@@ -1,35 +1,172 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="utf-8">
-    <title>Login </title>
-
-    <link th:href="@{/styles/cssandjs/main.css}" rel="stylesheet" />
-
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="theme-color" content="#323233"/>
+    <title>Index</title>
+    <link rel="stylesheet" media="all" type="text/css" th:href="@{/styles/cssandjs/general.css}">
+    <link rel="stylesheet" media="all" type="text/css" th:href="@{/styles/cssandjs/index.css}">
 </head>
 <body>
-    <div class="container">
-        <form class="form" id="login">
-            <h1 class="form__title">Login</h1>
-            <div class="form__message form__message--error"></div>
-            <div class="form__input-group">
-                <input type="text" class="form__input" autofocus placeholder="Username or email">
-                <div class="form__input-error-message"></div>
+<div class="wrapper">
+    <section class="no-auth-page-section">
+        <header class="psy-header no-auth transparent">
+            <div class="container-xl psy-header-content">
+                <div class="psy-header-left-content">
+                    <a class="logo" href="index.html">
+                        <span>ASKME</span>
+                    </a>
+                    <ul class="navbar">
+                        <li class="mnAdmins navbar-item hide"><a th:href="@{/home}">Admins</a></li>
+                        <li class="mnUsers navbar-item hide"><a th:href="@{/home}">Users</a></li>
+                        <li class="mnPosts-for-approval navbar-item hide"><a th:href="@{/home}">Posts For Approval</a>
+                        </li>
+                        <li class="mnMy-posts navbar-item hide"><a th:href="@{/home}">My Posts</a></li>
+                        <li class="mnPosts navbar-item hide"><a th:href="@{/home}">Posts</a></li>
+                    </ul>
+                </div>
+                <div class="header-right-content-auth">
+                    <div class="actions">
+                        <ul class="actions-right header-no-auth hide">
+                            <li>
+                                <button class="psy-btn secondary-dark thick transparent psy-popup-show-btn"
+                                        data-popup-name="login"><span class="psy-btn-text">Login</span></button>
+                            </li>
+                            <li>
+                                <button class="psy-btn primary thick psy-popup-show-btn" data-popup-name="registr"
+                                        data-type="standard"><span class="psy-btn-text">Get Started</span></button>
+                            </li>
+                        </ul>
+                        <ul class="actions-right header-is-auth hide">
+                            <li><span class="head-fullname"></span></li>
+                            <li>
+                                <button class="psy-btn primary thick header-logout" data-type="standard"><span
+                                        class="psy-btn-text">Log out</span></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="form__input-group">
-                <input type="password" class="form__input" autofocus placeholder="Password">
-                <div class="form__input-error-message"></div>
+        </header>
+        <div class="container-xxxl">
+            <div class="no-auth-page-section-content">
+                <div class="no-auth-page-section-left-box">
+                    <h1 class="title">You can create your forum</h1>
+                    <p class="description header-no-auth hide">Are you not registered yet?</p>
+                    <div class="btn-content">
+                        <button class="psy-btn primary thick psy-popup-show-btn header-no-auth hide"
+                                data-popup-name="registr" data-type="standard"><span
+                                class="psy-btn-text">Get Started</span></button>
+                        <a class="psy-btn primary thick header-is-auth hide" th:href="@{/home}"><span
+                                class="psy-btn-text">Posts</span></a>
+                    </div>
+                </div>
+                <div class="no-auth-page-section-right-box">
+                    <img   th:src="@{/images/home.svg}" alt="">
+                </div>
             </div>
-            <button class="form__button" type="submit">Continue</button>
-            <p class="form__text">
-                <a href="#" class="form__link">Forgot your password?</a>
-            </p>
-            <p class="form__text">
-                <a class="form__link" th:href="@{/forum/user/register}" methods="Post" >Don't have an account? Create account</a>
-            </p>
-        </form>
+        </div>
+    </section>
+    <section class="grid">
+        <div class="container-xxl">
+            <div class="head head-with-icons">
+                <h2 class="title"></h2>
+            </div>
+        </div>
+    </section>
+    <footer class="psy-footer">
+        <div class="container-xxl">
+            <div class="reserved-rights">
+                <p>© 2022 AskMe. All rights reserved</p>
+            </div>
+        </div>
+    </footer>
+    <div class="psy-popup hide-only-cancel popup-width-424" data-popup="login">
+        <div class="popup-content">
+            <div class="popup-head">
+                <span class="empty-column"></span>
+                <span>ASKME</span>
+                <div class="psy-popup-close-btn icon" data-popup-name="login">
+                    <img  th:src="@{/images/close.svg}" class="close-popup-icon" alt="Close">
+                </div>
+            </div>
+            <p class="psy-popup-title">Welcome back!</p>
+            <form id="form-login" autocomplete="off" th:action="@{/index.html}" action="index.html" method="post">
+                <div class="input-wrap w-100 p-top-24">
+                    <label class="title">User Name *</label>
+                    <div class="content m-top-4">
+                        <input type="text" placeholder="User Name" name="username" autocomplete="off">
+                    </div>
+                </div>
+                <div class="input-wrap has-right-i w-100 p-top-16">
+                    <label class="title">Password *</label>
+                    <div class="content m-top-4">
+                        <input type="password" placeholder="******************" name="password" autocomplete="off">
+                    </div>
+                </div>
+                <p class="error"></p>
+                <button class="psy-btn psy-btn-loader primary thick w-100" type="submit">
+                    <span class="psy-btn-text">Login</span>
+                </button>
+            </form>
+        </div>
     </div>
-<!--    <script src="src/main.js"></script>-->
+
+    <div class="psy-popup hide-only-cancel popup-width-424" data-popup="registr">
+        <div class="popup-content">
+            <div class="popup-head">
+                <span class="empty-column"></span>
+                <span>ASKME</span>
+                <div class="psy-popup-close-btn icon" data-popup-name="registr">
+                    <img  th:src="@{/images/close.svg}" class="close-popup-icon" alt="Close">
+                </div>
+            </div>
+            <p class="psy-popup-title">Get Started!</p>
+            <form id="form-registr" autocomplete="off" action="index.html" method="post">
+                <div class="input-wrap w-100 p-top-24">
+                    <label class="title">First Name *</label>
+                    <div class="content m-top-4">
+                        <input type="text" placeholder="First Name" name="firstName" autocomplete="off">
+                    </div>
+                </div>
+                <div class="input-wrap w-100 p-top-16">
+                    <label class="title">Last Name *</label>
+                    <div class="content m-top-4">
+                        <input type="text" placeholder="Last Name" name="lastName" autocomplete="off">
+                    </div>
+                </div>
+                <div class="input-wrap w-100 p-top-16">
+                    <label class="title">Email *</label>
+                    <div class="content m-top-4">
+                        <input type="email" placeholder="Email" name="email" autocomplete="off">
+                    </div>
+                </div>
+                <div class="input-wrap w-100 p-top-16">
+                    <label class="title">User Name *</label>
+                    <div class="content m-top-4">
+                        <input type="text" placeholder="User Name" name="userName" autocomplete="off">
+                    </div>
+                </div>
+                <div class="input-wrap w-100 p-top-16">
+                    <label class="title">Password *</label>
+                    <div class="content m-top-4">
+                        <input type="password" placeholder="******************" name="password" autocomplete="off">
+                    </div>
+                </div>
+                <p class="error"></p>
+                <button class="psy-btn psy-btn-loader primary thick w-100" type="submit">
+                    <span class="psy-btn-text">Get Started</span>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" th:src="@{/js/cssandjs/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/cssandjs/general.js}"></script>
+<script type="text/javascript" th:src="@{/js/cssandjs/index.js}"></script>
 </body>
+</html>

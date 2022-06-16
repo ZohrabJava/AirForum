@@ -1,5 +1,6 @@
 package com.example.airforum.service.impl;
 
+import com.example.airforum.convertor.UserConvertor;
 import com.example.airforum.dto.userDto.UserRequestDto;
 import com.example.airforum.dto.userDto.UserResponseDto;
 import com.example.airforum.email.EmailSender;
@@ -10,26 +11,27 @@ import com.example.airforum.service.token.ConfirmationToken;
 import com.example.airforum.service.token.ConfirmationTokenService;
 import com.example.airforum.validator.EmailValidator;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
-public class UserServiceImpl implements UserService , UserDetailsService {
+public class UserServiceImpl implements UserService {
     private final static String USER_NOT_FOUND_MSG =
             "user with email %s not found";
-    private final UserRepository userRepository;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final ConfirmationTokenService confirmationTokenService;
     private final EmailValidator emailValidator;
     private final EmailSender emailSender;
+
+    private final UserRepository userRepository;
+    private final UserConvertor userConvertor;
+    private final PasswordEncoder passwordEncoder;
+
+    private final ConfirmationTokenService confirmationTokenService;
     @Override
     public String creatUser(UserRequestDto request) {
         boolean isValidEmail = emailValidator.
@@ -58,9 +60,22 @@ public class UserServiceImpl implements UserService , UserDetailsService {
         return token;
     }
 
+    @Override
+    public UserResponseDto getByUserName(String userName) {
+        Optional<User> user = userRepository.findByUserName(userName);
+        return userConvertor.toUserDto(user.get());
+
+    }
+
+    @Override
+    public UserResponseDto getById(Long id) {
+        User user = userRepository.getUserById(id);
+        return userConvertor.toUserDto(user);
+    }
+
     public String signUpUser(User user) {
         boolean userExists = userRepository
-                .findByEmail(user.geteEmail())
+                .findByEmail(user.getEmail())
                 .isPresent();
 
         if (userExists) {
@@ -70,7 +85,7 @@ public class UserServiceImpl implements UserService , UserDetailsService {
             throw new IllegalStateException("email already taken");
         }
 
-        String encodedPassword = bCryptPasswordEncoder
+        String encodedPassword = passwordEncoder
                 .encode(user.getPassword());
 
         user.setPassword(encodedPassword);
@@ -94,11 +109,7 @@ public class UserServiceImpl implements UserService , UserDetailsService {
         return token;
     }
 
-    @Override
-    public UserResponseDto getByLoginPassword(UserRequestDto user) {
-        return null;
-    }
-    private String buildEmail(String name, String link) {
+    public String buildEmail(String name, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
@@ -185,15 +196,13 @@ public class UserServiceImpl implements UserService , UserDetailsService {
 
         confirmationTokenService.setConfirmedAt(token);
         enableAppUser(
-                confirmationToken.getUser().geteEmail());
+                confirmationToken.getUser().getEmail());
         return "confirmed";
     }
+
     public int enableAppUser(String email) {
         return userRepository.enableAppUser(email);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        return null;
-    }
+
 }

@@ -1,15 +1,18 @@
 package com.example.airforum.controller;
 
 import com.example.airforum.dto.userDto.UserRequestDto;
+import com.example.airforum.dto.userDto.UserResponseDto;
+import com.example.airforum.model.User;
 import com.example.airforum.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping(path = "forum/user")
+@RestController
+@RequestMapping()
 @AllArgsConstructor
 public class UserController {
 
@@ -20,12 +23,21 @@ public class UserController {
         return "success";
     }
 
-    @CrossOrigin(origins = "*")
     @PostMapping("/creat")
-    public String register(@RequestBody UserRequestDto request) {
-         userService.creatUser(request);
-         return "redirect:/forum/user/success";
+    public UserResponseDto register(@RequestBody UserRequestDto request) {
+        userService.creatUser(request);
+        return userService.getByUserName(request.getUserName());
     }
+//    @GetMapping("/user")
+//    public UserResponseDto getUserById(@RequestParam Long id){
+//        return userService.getById(id);
+//    }
+    @GetMapping("/user/{username}")
+    public UserResponseDto getUserByUserName(@PathVariable("username") String name){
+        return userService.getByUserName(name);
+    }
+
+
 
 
 }

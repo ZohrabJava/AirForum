@@ -1,5 +1,6 @@
 package com.example.airforum.model;
 
+import com.example.airforum.enams.Roles;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,7 +11,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "users")
-public class User implements Serializable , UserDetails {
+public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column(name = "user_id", nullable = false)
@@ -25,6 +26,9 @@ public class User implements Serializable , UserDetails {
     private String email;
     @Column(name = "password",nullable = false)
     private String password;
+    @Column(name = "roles",nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Roles roles=Roles.USER;
     @Column(name = "enabled",nullable = false)
     private Boolean enabled = false;
 
@@ -41,22 +45,45 @@ public class User implements Serializable , UserDetails {
 
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public String getEmail() {
+        return email;
     }
 
-    public Boolean getEnabled() {
-        return enabled;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
+    public Roles getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Roles roles) {
+        this.roles = roles;
     }
 
     public Long getId() {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
     public String getUserName() {
         return userName;
@@ -66,65 +93,19 @@ public class User implements Serializable , UserDetails {
         this.userName = userName;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
     public String getPassword() {
         return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public Boolean getEnabled() {
+        return enabled;
     }
 
-    public void setFirstName(String name) {
-        this.firstName = name;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String surName) {
-        this.lastName = surName;
-    }
-
-    public String geteEmail() {
-        return email;
-    }
-
-    public void seteEmail(String eMail) {
-        this.email = eMail;
+    public void setEnabled(Boolean enabled) {
+        this.enabled = enabled;
     }
 }
