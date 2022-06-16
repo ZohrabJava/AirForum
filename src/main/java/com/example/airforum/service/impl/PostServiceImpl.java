@@ -16,8 +16,8 @@ public class PostServiceImpl {
 
     public PostResponseDto creatPost(PostRequestDto postRequestDto){
         Post post=postConvertor.convertor(postRequestDto);
-        postRepository.save(post);
-        return postConvertor.convertor(post);
+        System.out.println(post.toString());
+        return postConvertor.convertor( postRepository.save(post));
     }
 
 //

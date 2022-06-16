@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class Category implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id", nullable = false)
+//    @Column(name = "category_id", nullable = false)
     private Long id;
     @Enumerated(EnumType.STRING)
     @Column(name = "post_category", nullable = false, unique = true)

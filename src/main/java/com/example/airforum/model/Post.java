@@ -2,6 +2,8 @@ package com.example.airforum.model;
 
 import com.example.airforum.enams.AnswerState;
 import com.example.airforum.enams.PostState;
+import lombok.ToString;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,17 +11,22 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "post")
+@ToString
 public class Post implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id", nullable = false)
     private Long id;
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private User user;
+    @JoinColumn(name = "category_id")
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Category category;
     @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "description_path", nullable = false)
+    @Column(name = "description_path",nullable = false)
+    @Type(type = "text")
     private String descriptionPath;
     @Column(name = "image_path", nullable = false)
     private String imagePath;
@@ -35,10 +42,7 @@ public class Post implements Serializable {
     private Double rating;
     @Column(name = "rating_count", nullable = false)
     private Long ratingCount;
-    @Enumerated(EnumType.STRING)
-    @JoinColumn(name = "category_id", nullable = false)
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Category category;
+
 
     public Post(User user,
                 String title,

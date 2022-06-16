@@ -18,7 +18,7 @@ public class PostConvertor {
     private final UserServiceImpl userService;
     private final CategoryServiceImpl categoryService;
     public Post convertor(PostRequestDto postRequestDto){
-        Post post=new Post(postRequestDto.getUserId(),
+        Post post=new Post(userService.userGetById( postRequestDto.getUserId()),
                 postRequestDto.getTitle(),
                 postRequestDto.getDescriptionPath(),
                 postRequestDto.getImagePath(),
@@ -27,17 +27,17 @@ public class PostConvertor {
                 LocalDateTime.now(),
                 0.0,
                 0L,
-                postRequestDto.getCategoryId());
+                categoryService.categoryGetById( postRequestDto.getCategoryId()));
         return post;
     }
     public PostResponseDto convertor(Post post){
         PostResponseDto postResponseDto=new PostResponseDto(
-                post.getUser(),
+                post.getUser().getId(),
                 post.getId(),
                 post.getTitle(),
                 post.getDescriptionPath(),
                 post.getImagePath(),
-                post.getCategory());
+                post.getCategory().getId());
         return postResponseDto;
     }
 }
