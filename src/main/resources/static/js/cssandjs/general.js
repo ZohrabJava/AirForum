@@ -13,7 +13,7 @@ var generalFunctions = {
             console.log(json)
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8082/user/' + json.sub,
+                url: 'http://localhost:8082/user/' + json.userName(),
                 contentType: 'application/json',
                 headers: { "Authorization": "Basic token" },//put token
                 success: function (resp) {

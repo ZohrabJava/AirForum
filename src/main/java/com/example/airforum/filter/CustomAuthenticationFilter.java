@@ -2,6 +2,8 @@ package com.example.airforum.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.example.airforum.controller.UserController;
+import com.example.airforum.convertor.UserConvertor;
 import com.example.airforum.dto.userDto.UserRequestDto;
 import com.example.airforum.dto.userDto.UserResponseDto;
 import com.example.airforum.repository.UserRepository;
@@ -31,7 +33,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
     private final AuthenticationManager authenticationManager;
 
-
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = request.getParameter("username");
@@ -56,8 +57,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         List<String> userRoles = user.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
-
-        String accessToken = this.generateJWTToken(username, issuer, userRoles);
+        Boolean enabled=user.isEnabled();
+        String accessToken = this.generateJWTToken(enabled,username, issuer, userRoles);
 
         /*String refreshToken = JWT.create()
                 .withSubject(user.getUsername())
@@ -69,12 +70,15 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         //response.setHeader("access-token", accessToken);
 
         Map<String, String> tokens = new HashMap<>();
+
+        tokens.put("userName",username);
         tokens.put("access_token", accessToken);
+//        tokens.put();
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
 
-    private String generateJWTToken(String username, String issuer, List<String> roles) {
+    private String generateJWTToken(Boolean enabled, String username, String issuer, List<String> roles) {
         Algorithm algorithm = Algorithm.HMAC256("secret");
         Date expirationDate = new Date(System.currentTimeMillis() + 1440 * 60 * 1000);
 
@@ -83,6 +87,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withIssuer(issuer)
                 .withExpiresAt(expirationDate)
                 .withClaim("roles", roles)
+                .withClaim("isEnabled",enabled)
                 .sign(algorithm);
     }
 }

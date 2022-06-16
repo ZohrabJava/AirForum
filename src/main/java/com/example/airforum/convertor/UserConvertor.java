@@ -9,13 +9,15 @@ public class UserConvertor {
 
     public UserResponseDto toUserDto(User user) {
         UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setId(user.getId());
         userResponseDto.setFirstName(user.getFirstName());
         userResponseDto.setLastName(user.getLastName());
-        userResponseDto.setUserName(user.getUserName());
         userResponseDto.setEmail(user.getEmail());
-        userResponseDto.setEnabled(user.getEnabled());
-        userResponseDto.setRoles(user.getRoles());
+        userResponseDto.setUserId(user.getId());
+        userResponseDto.setStatus(1);
+//        userResponseDto.s(user.getUserName());
+
+        userResponseDto.setVerification(user.getEnabled());
+        userResponseDto.setRole(user.getRoles().ordinal());
         return userResponseDto;
     }
 }

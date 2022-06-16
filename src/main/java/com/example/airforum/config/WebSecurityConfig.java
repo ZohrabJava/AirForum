@@ -53,6 +53,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
         http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
+//        http.authorizeRequests().antMatchers("/user/{username}").authenticated();
 //        http
 //                .formLogin()
 //                .loginPage("/")

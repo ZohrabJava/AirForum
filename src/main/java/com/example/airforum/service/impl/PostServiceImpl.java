@@ -1,14 +1,25 @@
-//package com.example.airforum.service.impl;
-//
-//import com.example.airforum.dto.postDto.PostRequestDto;
-//import com.example.airforum.dto.postDto.PostResponseDto;
-//import com.example.airforum.repository.PostRepository;
-//import lombok.AllArgsConstructor;
-//
-//@AllArgsConstructor
-//public class PostServiceImpl {
-//    private final PostRepository postRepo;
-//
+package com.example.airforum.service.impl;
+
+import com.example.airforum.convertor.PostConvertor;
+import com.example.airforum.dto.postDto.PostRequestDto;
+import com.example.airforum.dto.postDto.PostResponseDto;
+import com.example.airforum.model.Post;
+import com.example.airforum.repository.PostRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@AllArgsConstructor
+@Service
+public class PostServiceImpl {
+    private final PostRepository postRepository;
+    private final PostConvertor postConvertor;
+
+    public PostResponseDto creatPost(PostRequestDto postRequestDto){
+        Post post=postConvertor.convertor(postRequestDto);
+        postRepository.save(post);
+        return postConvertor.convertor(post);
+    }
+
 //
 //    public PostResponseDto creatPost(PostRequestDto postRequestDto) {
 //        Post post = postMapper.toPost(postRequestDto);
@@ -46,5 +57,5 @@
 //            postRepo.save(post1);
 //        }
 //    }
-//
-//}
+
+}

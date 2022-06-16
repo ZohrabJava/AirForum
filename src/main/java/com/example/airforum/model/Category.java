@@ -18,8 +18,7 @@ public class Category implements Serializable {
     @Column(name = "post_category", nullable = false, unique = true)
     private PostCategoryType postCategory;
 
-    public Category(Long id, PostCategoryType postCategory) {
-        this.id = id;
+    public Category( PostCategoryType postCategory) {
         this.postCategory = postCategory;
     }
 

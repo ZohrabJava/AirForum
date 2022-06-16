@@ -1,5 +1,7 @@
 package com.example.airforum.service;
 
-public interface CategoryService {
+import com.example.airforum.model.Category;
 
+public interface CategoryService {
+    Category getCategoryById(Long id);
 }

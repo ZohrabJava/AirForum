@@ -34,7 +34,9 @@ public class UserController {
 //    }
     @GetMapping("/user/{username}")
     public UserResponseDto getUserByUserName(@PathVariable("username") String name){
+        System.out.println(userService.getByUserName(name));
         return userService.getByUserName(name);
+
     }
 
 

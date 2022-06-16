@@ -76,9 +76,10 @@ var indexFunctions = {
                             $(".psy-popup[data-popup='login']").hide();
                             form.find("input[name='username']").val("");
                             form.find("input[name='password']").val("");
+                            console.log( JSON.stringify(resp))
                             localStorage.setItem("userData", JSON.stringify(resp));
 
-                            generalFunctions.isAuthorized(resp);
+                            // generalFunctions.isAuthorized(resp);
 
                         }
                     }
