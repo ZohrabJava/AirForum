@@ -10,9 +10,9 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class PostRequestDto {
-        private Long userId;
+        private String userName;
         private String title;
         private String descriptionPath;
         private String imagePath;
-        private Long categoryId;
+        private String categoryName;
 }

@@ -17,10 +17,10 @@ public class Post implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id", nullable = false)
     private Long id;
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id",nullable = false)
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private User user;
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id",nullable = false)
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Category category;
     @Column(name = "title", nullable = false)
@@ -28,7 +28,7 @@ public class Post implements Serializable {
     @Column(name = "description_path",nullable = false)
     @Type(type = "text")
     private String descriptionPath;
-    @Column(name = "image_path", nullable = false)
+    @Column(name = "image_path",nullable = true)
     private String imagePath;
     @Enumerated(EnumType.STRING)
     @Column(name = "post_state", nullable = false)

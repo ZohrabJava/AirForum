@@ -15,16 +15,41 @@ public class PageController {
 
     private final UserServiceImpl userService;
 
-
     @GetMapping("/confirm")
     public String viewConfirmPage(@RequestParam("token") String token) {
         userService.confirmToken(token);
         return "emailSuccess";
     }
 
-    @GetMapping("/home")
+    @GetMapping("/index.html")
     public String viewHome() {
         return "index";
+    }
+
+    @GetMapping("/admins")
+    public String viwAdmins() {
+        return "admins";
+    }
+    @GetMapping("/users")
+    public String viwUsers() {
+        return "users";
+    }
+    @GetMapping("/postsForApproval")
+    public String viewPostsForApproval() {
+        return "postsForApproval";
+    }
+
+    @GetMapping("/categories")
+    public String viewCategories() {
+        return "categories";
+    }
+    @GetMapping("/myPosts")
+    public String viewMyPosts() {
+        return "myposts";
+    }
+    @GetMapping("/posts")
+    public String viewPosts() {
+        return "posts";
     }
 
 

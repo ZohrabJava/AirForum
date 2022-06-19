@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="theme-color" content="#323233" />
+    <title>Users</title>
+    <link rel="stylesheet" media="all" type="text/css" th:href="@{/styles/cssandjs/index.css}">
+</head>
+<body>
+    <div class="wrapper">
+        <section class="no-auth-page-section">
+            <header class="psy-header no-auth transparent">
+                <div class="container-xl psy-header-content">
+                    <div class="psy-header-left-content">
+                        <a class="logo" href="index.html">
+                            <span>ASKME</span>
+                        </a>
+                        <ul class="navbar">
+                            <li class="categories navbar-item hide"><a th:href="@{/categories}">Categories</a></li>
+                            <li class="mnAdmins navbar-item hide"><a th:href="@{/admins}">Admins</a></li>
+                            <li class="mnUsers navbar-item hide"><a th:href="@{/users}">Users</a></li>
+                            <li class="mnPosts-for-approval navbar-item hide">
+                                <a th:href="@{/postsForApproval}">Posts For Approval</a>
+                            </li>
+                            <li class="mnMy-posts navbar-item hide"><a th:href="@{/myPosts}">My Posts</a></li>
+                            <li class="mnPosts navbar-item hide"><a th:href="@{/posts}">Posts</a></li>
+                        </ul>
+                    </div>
+                    <div class="header-right-content-auth">
+                        <div class="actions">
+                            <ul class="actions-right header-no-auth hide">
+                                <li>
+                                    <button class="psy-btn secondary-dark thick transparent psy-popup-show-btn"
+                                            data-popup-name="login">
+                                        <span class="psy-btn-text">Login</span>
+                                    </button>
+                                </li>
+                                <li>
+                                    <button class="psy-btn primary thick psy-popup-show-btn" data-popup-name="registr"
+                                            data-type="standard">
+                                        <span class="psy-btn-text">Get Started</span>
+                                    </button>
+                                </li>
+                            </ul>
+                            <ul class="actions-right header-is-auth hide">
+                                <li><span class="head-fullname"></span></li>
+                                <li>
+                                    <button class="psy-btn primary thick header-logout" data-type="standard">
+                                        <span class="psy-btn-text">Log out</span>
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        </section>
+        <section class="grid">
+            <div class="container-xxl">
+                <div class="head">
+                    <h2 class="title">Posts</h2>
+                </div>
+                <div class="post-container"></div>
+            </div>
+        </section>
+        <footer class="psy-footer">
+            <div class="container-xxl">
+                <div class="reserved-rights">
+                    <p>© 2022 AskMe. All rights reserved</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script type="text/javascript" th:src="@{/js/cssandjs/jquery/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/cssandjs/index.js}"></script>
+</body>
+</html>

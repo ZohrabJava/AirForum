@@ -9,6 +9,5 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class CategoryRequestDto {
-
-    private PostCategoryType postCategoryType;
+    private String postCategoryType;
 }

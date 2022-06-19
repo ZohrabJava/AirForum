@@ -3,7 +3,10 @@ package com.example.airforum.service.impl;
 import com.example.airforum.convertor.UserConvertor;
 import com.example.airforum.dto.userDto.UserRequestDto;
 import com.example.airforum.dto.userDto.UserResponseDto;
+import com.example.airforum.dto.userDto.UserUpdateRequestDto;
+import com.example.airforum.dto.userDto.UserUpdateResponseDto;
 import com.example.airforum.email.EmailSender;
+import com.example.airforum.enams.Roles;
 import com.example.airforum.model.User;
 import com.example.airforum.repository.UserRepository;
 import com.example.airforum.service.UserService;
@@ -16,12 +19,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final static String USER_NOT_FOUND_MSG =
             "user with email %s not found";
     private final EmailValidator emailValidator;
@@ -66,9 +72,14 @@ public class UserServiceImpl implements UserService {
         return userConvertor.toUserDto(user.get());
 
     }
+    public User getByName(String userName) {
+
+        return userRepository.findByUserName(userName).get();
+
+    }
 
 
-    public User userGetById(Long id) {
+    public User usergetById(Long id) {
        return userRepository.getUserById(id);
 
     }
@@ -76,6 +87,65 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto getById(Long id) {
         User user = userRepository.getUserById(id);
         return userConvertor.toUserDto(user);
+    }
+
+    @Override
+    public List<UserResponseDto> getAllUsers() {
+        List<User> users=userRepository.getAllByRoles(Roles.USER);
+        List<UserResponseDto> userResponseDto=new ArrayList<>();
+        for (User user : users) {
+            userResponseDto.add(userConvertor.toUserDto(user));
+        }
+        return userResponseDto;
+    }
+
+    @Override
+    public List<UserResponseDto> getAllAdmins() {
+        List<User> users=userRepository.getAllByRoles(Roles.ADMIN);
+        List<UserResponseDto> userResponseDto=new ArrayList<>();
+        for (User user : users) {
+            userResponseDto.add(userConvertor.toUserDto(user));
+        }
+        return userResponseDto;
+    }
+
+    @Override
+    public UserUpdateResponseDto blockUser(UserUpdateRequestDto userUpdateRequestDto) {
+        UserUpdateResponseDto userUpdateResponseDto=new UserUpdateResponseDto();
+        if(getByName(userUpdateRequestDto.getUserName())==null){
+            userUpdateResponseDto.setError("Super User or Admin  not found");
+            return userUpdateResponseDto;
+        }
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.SuperAdmin &&
+                getByName(userUpdateRequestDto.getUserName()).getId().equals(userUpdateRequestDto.getId())){
+            userUpdateResponseDto.setError("Super User cant block him");
+            return userUpdateResponseDto;
+        }
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.ADMIN &&
+                getByName(userUpdateRequestDto.getUserName()).getId().equals(userUpdateRequestDto.getId())){
+            userUpdateResponseDto.setError("Admin cant block him");
+            return userUpdateResponseDto;
+        }
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.USER ){
+            userUpdateResponseDto.setError("User cant block ");
+            return userUpdateResponseDto;
+        }
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.ADMIN &&
+                getByName(getById( userUpdateRequestDto.getId()).getUserName()).getRoles()==Roles.ADMIN){
+            userUpdateResponseDto.setError("Admin cant block another Admin");
+            return userUpdateResponseDto;
+        }
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.ADMIN &&
+                getByName(getById( userUpdateRequestDto.getId()).getUserName()).getRoles()==Roles.SuperAdmin){
+            userUpdateResponseDto.setError("Admin cant block Super Admin");
+            return userUpdateResponseDto;
+        }
+
+           User user= getByName(getById(userUpdateRequestDto.getId()).getUserName());
+           user.setEnabled(false);
+           userRepository.save(user);
+           return userUpdateResponseDto;
+
     }
 
     public String signUpUser(User user) {

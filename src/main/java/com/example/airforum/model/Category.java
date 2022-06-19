@@ -14,11 +14,11 @@ public class Category implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @Column(name = "category_id", nullable = false)
     private Long id;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "post_category", nullable = false, unique = true)
-    private PostCategoryType postCategory;
 
-    public Category( PostCategoryType postCategory) {
+    @Column(name = "post_category", nullable = false, unique = true)
+    private String postCategory;
+
+    public Category( String postCategory) {
         this.postCategory = postCategory;
     }
 
@@ -34,11 +34,11 @@ public class Category implements Serializable {
         this.id = id;
     }
 
-    public PostCategoryType getPostCategory() {
+    public String getPostCategory() {
         return postCategory;
     }
 
-    public void setPostCategory(PostCategoryType postCategory) {
+    public void setPostCategory(String postCategory) {
         this.postCategory = postCategory;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.airforum.model;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "post_comments")
@@ -17,14 +18,16 @@ public class PostComment {
     private User user;
     @Column(name = "url_discription",nullable = false)
     private String description;
-
+    @Column(name = "coment_date",nullable = false)
+    private LocalDateTime commentDate;
     public PostComment() {
     }
 
-    public PostComment(Post post, User user, String description) {
+    public PostComment(Post post, User user, String description,LocalDateTime commentDate) {
         this.post = post;
         this.user = user;
         this.description = description;
+        this.commentDate=commentDate;
     }
 
     public Integer getId() {
@@ -53,5 +56,13 @@ public class PostComment {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public LocalDateTime getCommentDate() {
+        return commentDate;
+    }
+
+    public void setCommentDate(LocalDateTime commentDate) {
+        this.commentDate = commentDate;
     }
 }

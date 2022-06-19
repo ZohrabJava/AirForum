@@ -2,6 +2,8 @@ package com.example.airforum.controller;
 
 import com.example.airforum.dto.userDto.UserRequestDto;
 import com.example.airforum.dto.userDto.UserResponseDto;
+import com.example.airforum.dto.userDto.UserUpdateRequestDto;
+import com.example.airforum.dto.userDto.UserUpdateResponseDto;
 import com.example.airforum.model.User;
 import com.example.airforum.service.UserService;
 import lombok.AllArgsConstructor;
@@ -10,6 +12,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping()
@@ -28,18 +32,31 @@ public class UserController {
         userService.creatUser(request);
         return userService.getByUserName(request.getUserName());
     }
-//    @GetMapping("/user")
-//    public UserResponseDto getUserById(@RequestParam Long id){
-//        return userService.getById(id);
-//    }
+
     @GetMapping("/user/{username}")
     public UserResponseDto getUserByUserName(@PathVariable("username") String name){
-        System.out.println(userService.getByUserName(name));
+
         return userService.getByUserName(name);
 
     }
+    @GetMapping("/userById/{id}")
+    public UserResponseDto getUserByUserId(@PathVariable("id") Long id){
 
+        return userService.getById(id);
 
+    }
+    @PostMapping("/blockUser")
+    public UserUpdateResponseDto blockUser(@RequestBody UserUpdateRequestDto userUpdateRequestDto){
+        return userService.blockUser(userUpdateRequestDto);
+    }
+    @GetMapping("/getAllUsers")
+    public List<UserResponseDto> getAllUsers(){
+        return userService.getAllUsers();
+    }
+    @GetMapping("/getAllAdmins")
+    public List<UserResponseDto> getAllAdmins(){
+        return userService.getAllAdmins();
+    }
 
 
 }

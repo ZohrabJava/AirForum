@@ -10,6 +10,6 @@ import lombok.*;
 @EqualsAndHashCode
 public class CategoryResponseDto {
     private Long id;
-    private PostCategoryType postCategoryType;
-
+    private String postCategoryType;
+    private String errorText;
 }

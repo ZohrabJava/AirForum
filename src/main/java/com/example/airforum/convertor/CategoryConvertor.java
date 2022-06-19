@@ -11,8 +11,9 @@ public class CategoryConvertor {
     public Category convert(CategoryRequestDto categoryRequestDto){
         return new Category(categoryRequestDto.getPostCategoryType());
     }
+
     public CategoryResponseDto convert(Category category){
         return new CategoryResponseDto(category.getId(),
-                category.getPostCategory());
+                category.getPostCategory(),null);
     }
 }
