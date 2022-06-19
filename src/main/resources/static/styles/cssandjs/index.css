@@ -93,7 +93,9 @@ section {
     display: flex;
     flex-direction: row;
 }
-
+.bt-actions{
+    list-style-type: none;
+}
     .psy-header .actions .actions-left li, .psy-header .actions .actions-right li, .psy-header .navbar .navbar-item {
         list-style-type: none;
     }
@@ -620,4 +622,33 @@ img {
 
 .text-center {
     text-align: center;
+}
+.forgot {
+    font-size: 13px;
+    text-decoration: underline;
+    color: #454646;
+}
+
+.img-nav {
+    width: 30px;
+    height: 30px;
+    position: relative;
+    top: -7px;
+}
+
+
+.src-option {
+    width: 200px !important;
+    margin-right: 5px;
+}
+
+.src-block {
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-forum {
+    position: relative;
+    top: 5px;
+    margin-left: 10px;
 }

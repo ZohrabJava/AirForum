@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class PostCommentResponseDto {
+    private String firstName;
+    private String lastName;
     private String comment;
     private LocalDateTime localDateTime;
 }

@@ -22,15 +22,22 @@ public class PostController {
     public PostResponseDto creatPost(@RequestBody PostRequestDto postRequestDto) {
         return postService.creatPost(postRequestDto);
     }
-
     @GetMapping("/createdPosts")
     public List<PostResponseDto> getAllCreatedPosts() {
-        return postService.getAllPostsByPostStatus(PostState.CREATED);
-    }
 
+        return postService.getAllPostsByPostStatus(PostState.Created,null);
+    }
+    @GetMapping("/createdPosts/{id}")
+    public List<PostResponseDto> getCreatedPostById(@PathVariable("id") Long  id) {
+        return postService.getAllPostsByPostStatus(PostState.Created,id);
+    }
+    @PostMapping("/searchPosts")
+    public List<PostResponseDto> getAllCreatedPostsByCategory(@RequestBody PostRequestDto postRequestDto) {
+        return postService.getAllCreatedPostsBySearch(postRequestDto.getCategoryId(),postRequestDto.getTitle());
+    }
     @GetMapping("/waitingPosts")
     public List<PostResponseDto> getAllWaitingPosts() {
-        return postService.getAllPostsByPostStatus(PostState.WAITING);
+        return postService.getAllPostsByPostStatus(PostState.Waiting,null);
     }
 
     @GetMapping("/getPostsByUserName/{userName}")
@@ -40,12 +47,16 @@ public class PostController {
 
     @PostMapping("/blockPost")
     public PostUpdateResponseDto blockPost(@RequestBody PostUpdateRequestDto postUpdateRequestDto) {
-        return postService.updatePostStatus(postUpdateRequestDto, PostState.BLOCKED);
+        return postService.updatePostStatus(postUpdateRequestDto, PostState.Blocked);
     }
 
     @PostMapping("/activatePost")
     public PostUpdateResponseDto activatePost(@RequestBody PostUpdateRequestDto postUpdateRequestDto) {
-        return postService.updatePostStatus(postUpdateRequestDto, PostState.CREATED);
+        return postService.updatePostStatus(postUpdateRequestDto, PostState.Created);
+    }
+    @PostMapping("/privatePost")
+    public PostUpdateResponseDto privatePost(@RequestBody PostUpdateRequestDto postUpdateRequestDto) {
+        return postService.updatePostStatus(postUpdateRequestDto, PostState.Private);
     }
 
 

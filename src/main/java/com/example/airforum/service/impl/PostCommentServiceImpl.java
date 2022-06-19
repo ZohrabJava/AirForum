@@ -23,7 +23,7 @@ public class PostCommentServiceImpl implements PostCommentService {
         return postCommentConvertor.convertor(postComment);
     }
 
-    public List<PostCommentResponseDto> getCommentsByPostId(Long id) {
+    public  List<PostCommentResponseDto> getCommentsByPostId(Long id) {
         List<PostComment> postComments = postCommentRepository.getPostCommentByPostId(id);
         List<PostCommentResponseDto> postCommentResponseDto=new ArrayList<>();
         for (PostComment postComment : postComments) {

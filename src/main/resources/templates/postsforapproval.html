@@ -24,9 +24,9 @@
                             <li class="mnAdmins navbar-item hide"><a th:href="@{/admins}">Admins</a></li>
                             <li class="mnUsers navbar-item hide"><a th:href="@{/users}">Users</a></li>
                             <li class="mnPosts-for-approval navbar-item hide">
-                                <a th:href="@{/postsForApproval}">Posts For Approval</a>
+                                <a th:href="@{/postsforapproval}">Posts For Approval</a>
                             </li>
-                            <li class="mnMy-posts navbar-item hide"><a th:href="@{/myPosts}">My Posts</a></li>
+                            <li class="mnMy-posts navbar-item hide"><a th:href="@{/myposts}">My Posts</a></li>
                             <li class="mnPosts navbar-item hide"><a th:href="@{/posts}">Posts</a></li>
                         </ul>
                     </div>
@@ -63,13 +63,16 @@
             <div class="container-xxl">
                 <div class="head">
                     <h2 class="title">Posts For Approval</h2>
-                    <div class="hide actions">
+                    <div class="hide bt-actions">
                         <input type="hidden" class="row-id" value="0" />
-                        <button class="psy-btn primary thick psy-popup-show-btn" data-popup-name="postdescription" data-type="standard">
+                        <button class="psy-btn primary hide thick psy-popup-show-btn descr-forum" data-popup-name="postdescription" data-type="standard">
                             <span class="psy-btn-text">Description</span>
                         </button>
-                        <button class="psy-btn primary thick approve-forum">
+                        <button class="psy-btn primary hide thick approve-forum">
                             <span class="psy-btn-text">Approve</span>
+                        </button>
+                        <button class="psy-btn primary hide thick block-forum">
+                            <span class="psy-btn-text">Block</span>
                         </button>
                     </div>
                 </div>

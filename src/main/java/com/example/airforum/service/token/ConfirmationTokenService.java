@@ -24,4 +24,13 @@ public class ConfirmationTokenService {
         return confirmationTokenRepository.updateConfirmedAt(
                 token, LocalDateTime.now());
     }
+
+    public String getTokenByUserId(Long id){
+        return confirmationTokenRepository.getConfirmationTokenByUserId(id).getToken();
+    }
+    public ConfirmationToken findConfirmationTokenByToken(String token){
+        ConfirmationToken confirmationToken=confirmationTokenRepository.getConfirmationTokenByToken(token);
+        return confirmationToken;
+    }
+
 }

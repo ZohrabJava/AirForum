@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @Controller
 @AllArgsConstructor
 public class PageController {
@@ -17,7 +19,10 @@ public class PageController {
 
     @GetMapping("/confirm")
     public String viewConfirmPage(@RequestParam("token") String token) {
-        userService.confirmToken(token);
+        String verification=userService.confirmToken(token);
+        if(verification.equals("expired")){
+            return "emailfaild";
+        }
         return "emailSuccess";
     }
 
@@ -34,16 +39,16 @@ public class PageController {
     public String viwUsers() {
         return "users";
     }
-    @GetMapping("/postsForApproval")
+    @GetMapping("/postsforapproval")
     public String viewPostsForApproval() {
-        return "postsForApproval";
+        return "postsforapproval";
     }
 
     @GetMapping("/categories")
     public String viewCategories() {
         return "categories";
     }
-    @GetMapping("/myPosts")
+    @GetMapping("/myposts")
     public String viewMyPosts() {
         return "myposts";
     }

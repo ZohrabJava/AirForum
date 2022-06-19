@@ -28,9 +28,16 @@ public class UserController {
     }
 
     @PostMapping("/creat")
-    public UserResponseDto register(@RequestBody UserRequestDto request) {
-        userService.creatUser(request);
-        return userService.getByUserName(request.getUserName());
+    public UserUpdateResponseDto register(@RequestBody UserRequestDto request) {
+        return userService.creatUser(request);
+    }
+    @PostMapping("/resetPassword")
+    public UserUpdateResponseDto resetPassword(@RequestBody UserUpdateRequestDto userUpdateRequestDto ){
+        return userService.resetPassword(userUpdateRequestDto.getEmail() );
+    }
+    @PostMapping("/updatePassword")
+    public UserUpdateResponseDto updatePassword(@RequestBody UserUpdateRequestDto userUpdateRequestDto){
+        return userService.updateUserPassword(userUpdateRequestDto.getToken(),userUpdateRequestDto.getPassword());
     }
 
     @GetMapping("/user/{username}")
@@ -45,9 +52,13 @@ public class UserController {
         return userService.getById(id);
 
     }
-    @PostMapping("/blockUser")
-    public UserUpdateResponseDto blockUser(@RequestBody UserUpdateRequestDto userUpdateRequestDto){
-        return userService.blockUser(userUpdateRequestDto);
+    @PostMapping("/changeRole")
+    public UserUpdateResponseDto changeRole(@RequestBody UserUpdateRequestDto userUpdateRequestDto){
+        return userService.changeRole(userUpdateRequestDto);
+    }
+    @PostMapping("/updateUser")
+    public UserUpdateResponseDto removeUser(@RequestBody UserUpdateRequestDto userUpdateRequestDto){
+        return userService.updateUser(userUpdateRequestDto);
     }
     @GetMapping("/getAllUsers")
     public List<UserResponseDto> getAllUsers(){

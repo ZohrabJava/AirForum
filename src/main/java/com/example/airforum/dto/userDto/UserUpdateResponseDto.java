@@ -8,5 +8,5 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class UserUpdateResponseDto {
-    private String error;
+    private String errorText;
 }

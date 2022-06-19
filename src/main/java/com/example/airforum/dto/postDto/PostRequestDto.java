@@ -14,5 +14,5 @@ public class PostRequestDto {
         private String title;
         private String descriptionPath;
         private String imagePath;
-        private String categoryName;
+        private Long categoryId;
 }

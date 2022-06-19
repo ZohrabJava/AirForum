@@ -24,9 +24,9 @@
                             <li class="mnAdmins navbar-item hide"><a th:href="@{/admins}">Admins</a></li>
                             <li class="mnUsers navbar-item hide"><a th:href="@{/users}">Users</a></li>
                             <li class="mnPosts-for-approval navbar-item hide">
-                                <a th:href="@{/postsForApproval}">Posts For Approval</a>
+                                <a th:href="@{/postsforapproval}">Posts For Approval</a>
                             </li>
-                            <li class="mnMy-posts navbar-item hide"><a th:href="@{/myPosts}">My Posts</a></li>
+                            <li class="mnMy-posts navbar-item hide"><a th:href="@{/myposts}">My Posts</a></li>
                             <li class="mnPosts navbar-item hide"><a th:href="@{/posts}">Posts</a></li>
                         </ul>
                     </div>
@@ -63,6 +63,22 @@
             <div class="container-xxl">
                 <div class="head">
                     <h2 class="title">Posts</h2>
+                    <div class="bt-actions src-block">
+                        <div class="input-wrap w-100">
+                            <div class="content">
+                                <select class="cat-option src-option">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-wrap w-100">
+                            <div class="content">
+                                <input class="src-title" type="text" placeholder="Title">
+                            </div>
+                        </div>
+                        <button class="psy-btn primary thick search-forum">
+                            <span class="psy-btn-text">Search</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="post-container"></div>
             </div>

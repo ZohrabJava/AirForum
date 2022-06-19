@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class PostCommentRequestDto {
-    private String userName;
+    private Long userId;
     private Long postId;
     private String comment;
 }

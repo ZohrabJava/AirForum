@@ -10,10 +10,17 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
-    String creatUser(UserRequestDto user);
+    UserUpdateResponseDto creatUser(UserRequestDto user);
     UserResponseDto getByUserName(String userName);
     UserResponseDto getById( Long id);
     List<UserResponseDto> getAllUsers();
     List<UserResponseDto> getAllAdmins();
-    UserUpdateResponseDto blockUser(UserUpdateRequestDto userUpdateRequestDto);
+
+    UserUpdateResponseDto updateUser(UserUpdateRequestDto userUpdateRequestDto);
+
+    UserUpdateResponseDto changeRole(UserUpdateRequestDto userUpdateRequestDto);
+
+    UserUpdateResponseDto resetPassword(String email);
+
+    UserUpdateResponseDto updateUserPassword(String token, String password);
 }

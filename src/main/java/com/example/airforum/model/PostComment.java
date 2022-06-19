@@ -9,7 +9,7 @@ public class PostComment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_comment_id")
-    private Integer id;
+    private Long id;
     @JoinColumn(name = "post_id",nullable = false)
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Post post;
@@ -30,7 +30,7 @@ public class PostComment {
         this.commentDate=commentDate;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
