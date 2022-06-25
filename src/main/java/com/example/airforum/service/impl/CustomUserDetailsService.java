@@ -4,6 +4,7 @@ import com.example.airforum.dto.userDto.UserRequestDto;
 import com.example.airforum.dto.userDto.UserResponseDto;
 import com.example.airforum.email.EmailSender;
 
+import com.example.airforum.model.CurrentUser;
 import com.example.airforum.model.User;
 import com.example.airforum.repository.UserRepository;
 import com.example.airforum.service.token.ConfirmationToken;
@@ -43,13 +44,9 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() ->
                         new UsernameNotFoundException("User not found with username: " + username));
 
-        Collection<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRoles().name()));
+//        Collection<SimpleGrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRoles().name()));
 
-        return new org.springframework.security.core.userdetails.User(
-                user.getUserName(),
-                user.getPassword(),
-                authorities
-        );
+        return new CurrentUser(user);
     }
 
 

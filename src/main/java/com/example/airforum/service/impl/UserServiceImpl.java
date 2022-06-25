@@ -14,6 +14,7 @@ import com.example.airforum.service.token.ConfirmationToken;
 import com.example.airforum.service.token.ConfirmationTokenRepository;
 import com.example.airforum.service.token.ConfirmationTokenService;
 import com.example.airforum.validator.EmailValidator;
+import com.example.airforum.validator.RegisterValidator;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,10 @@ public class UserServiceImpl implements UserService {
               userUpdateResponseDto.setErrorText("Wrong user name");
               return userUpdateResponseDto;
         }
+        if (RegisterValidator.isValidForm(request)!=null){
+            return RegisterValidator.isValidForm(request);
+        }
+
 
         boolean isValidEmail = emailValidator.
                 test(request.getEmail());
@@ -66,11 +71,10 @@ public class UserServiceImpl implements UserService {
                         request.getUserName(),
                         request.getEmail(),
                         request.getPassword()
-
                 )
         );
 
-        String link = "http://localhost:8082/confirm?token=" + token;
+        String link = "http://192.168.8.72:8082/confirm?token=" + token;
         emailSender.send(
                 request.getEmail(),
                 buildEmail(request.getFirstName(), link));
@@ -85,7 +89,7 @@ public class UserServiceImpl implements UserService {
             userUpdateResponseDto.setErrorText("Wrong email");
             return userUpdateResponseDto;
         }
-        String link = "http://localhost:8082/index.html?token=" + confirmationTokenService.getTokenByUserId(user.getId());
+        String link = "http://192.168.8.72:8082/index.html?token=" + confirmationTokenService.getTokenByUserId(user.getId());
         emailSender.send(
                 email,
                 resetPassword(user.getFirstName(), link));
@@ -254,7 +258,7 @@ public class UserServiceImpl implements UserService {
         ConfirmationToken confirmationToken = new ConfirmationToken(
                 token,
                 LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15),
+                LocalDateTime.now().plusMinutes(999999999),
                 user
         );
 

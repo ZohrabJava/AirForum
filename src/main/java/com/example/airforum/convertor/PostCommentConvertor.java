@@ -8,6 +8,7 @@ import com.example.airforum.repository.PostRepository;
 import com.example.airforum.repository.UserRepository;
 import com.example.airforum.service.impl.PostServiceImpl;
 import com.example.airforum.service.impl.UserServiceImpl;
+import com.example.airforum.util.Path;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,12 +24,16 @@ public class PostCommentConvertor {
         PostComment postComment=new PostComment();
         postComment.setPost(postRepository.getPostById(postCommentRequestDto.getPostId()));
         postComment.setUser(userRepository.getUserById(postCommentRequestDto.getUserId()));
-        postComment.setDescription(postCommentRequestDto.getComment());
+
+        postComment.setDescription( Path.savePath(postCommentRequestDto.getComment(),
+                userRepository.getUserById(postCommentRequestDto.getUserId())));
         postComment.setCommentDate(LocalDateTime.now());
         return postComment;
     }
     public PostCommentResponseDto convertor(PostComment postComment){
-        return new PostCommentResponseDto(postComment.getUser().getFirstName(),postComment.getUser().getLastName(),postComment.getDescription(),
+        return new PostCommentResponseDto(postComment.getUser().getFirstName(),
+                postComment.getUser().getLastName(),
+                Path.readPath(postComment.getDescription()) ,
                 postComment.getCommentDate());
     }
 }

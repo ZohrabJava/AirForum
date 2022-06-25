@@ -278,7 +278,7 @@ var indexFunctions = {
                 }
             });
         });
-        $("#form-createpost").on("submit", function (e) {
+        $("#form-createpost").on("submit", async function (e) {
             e.preventDefault();
 
             let userData = localStorage.getItem("userData");
@@ -292,13 +292,19 @@ var indexFunctions = {
                 let title = form.find("input[name='title']");
                 let description = form.find("textarea[name='description']");
                 let isValid = true;
+                let base64 = "";
+
+                if(document.getElementById("imagepath").files){
+                    const file = document.getElementById("imagepath").files[0];
+                    base64 = await self.getFileBase64(file);
+                }
 
                 const data = {
                     categoryId: parseInt(category.val()),
                     title: title.val(),
                     descriptionPath: description.val(),
                     userName: json.userName,
-                    imagePath: ""
+                    imagePath: (base64 ? base64 : "")
                 }
 
                 if (data.title.length == 0) {
@@ -343,7 +349,9 @@ var indexFunctions = {
                                     '<div class="td ds-title" style="width:335px;">' + resp.title + '</div>' +
                                     '<div class="td" style="width:335px;">' + self.getDateByFormat(resp.localDateTime, ".") + '</div>' +
                                     '<div class="td ds-status" style="width:335px;">' + resp.status + '</div>' +
+                                    '<div class="td navigation" style="width:30px;">' + self.getCursoreImage(resp.status, resp.postId) + '</div>' +
                                     '<input type="hidden" class="pst-desc" value="' + resp.descriptionPath + '" />' +
+                                    '<input type="hidden" class="pst-img" value="' + resp.imagePath + '" />' +
                                     '</div>';
                                 $(".row-data").append(html);
                             }
@@ -539,9 +547,17 @@ var indexFunctions = {
                 var desc = row.find(".pst-desc").val();
                 var cat = row.find(".ds-cat").text();
                 var title = row.find(".ds-title").text();
+                var img = row.find(".pst-img").val();
                 $(".psy-popup-cat").text(cat);
                 $(".psy-popup-title").text(title);
                 $(".post-descr").text(desc);
+                if(img) {
+                    $(".post-img").removeClass("hide");
+                    $(".post-img").attr("src", img);
+                }
+                else{
+                    $(".post-img").addClass("hide");
+                }
             }
             else if (uri.indexOf("myposts") > 0) {
                 $(".descr-forum").removeClass("hide");
@@ -552,9 +568,17 @@ var indexFunctions = {
                 var desc = row.find(".pst-desc").val();
                 var cat = row.find(".ds-cat").text();
                 var title = row.find(".ds-title").text();
+                var img = row.find(".pst-img").val();
                 $(".psy-popup-cat").text(cat);
                 $(".popup-title").text(title);
                 $(".post-descr").text(desc);
+                if(img) {
+                    $(".post-img").removeClass("hide");
+                    $(".post-img").attr("src", img);
+                }
+                else{
+                    $(".post-img").addClass("hide");
+                }
 
                 var status = row.find(".ds-status").text();
                 if (status == "Created") {
@@ -968,6 +992,7 @@ var indexFunctions = {
                                 let html = '<div class="post-data">' +
                                     '<div class="post-box" >' +
                                     '<h3>' + obj.category + ' (' + obj.title + ')</h3>' +
+                                    '<img src="' + obj.imagePath +'" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">'+
                                     '<p class="post-user">' + obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
                                     '<span class="post-decription">' + obj.descriptionPath + '</span>' +
                                     '</div>' +
@@ -1080,6 +1105,7 @@ var indexFunctions = {
                                     '<div class="td ds-title" style="width:450px;">' + obj.title + '</div>' +
                                     '<div class="td" style="width:450px;">' + self.getDateByFormat(obj.localDateTime, ".") + '</div>' +
                                     '<input type="hidden" class="pst-desc" value="' + obj.descriptionPath + '" />' +
+                                    '<input type="hidden" class="pst-img" value="' + obj.imagePath + '" />' +
                                     '</div>';
                                 $(".row-data").append(html);
                             });
@@ -1108,6 +1134,7 @@ var indexFunctions = {
                                     '<div class="td ds-status" style="width:335px;">' + obj.status + '</div>' +
                                     '<div class="td navigation" style="width:30px;">' + self.getCursoreImage(obj.status, obj.postId) + '</div>' +
                                     '<input type="hidden" class="pst-desc" value="' + obj.descriptionPath + '" />' +
+                                    '<input type="hidden" class="pst-img" value="' + obj.imagePath + '" />' +
                                     '</div>';
                                 $(".row-data").append(html);
                             });
@@ -1134,6 +1161,7 @@ var indexFunctions = {
                                 let html = '<div class="post-data">' +
                                     '<div class="post-box" >' +
                                     '<h3>' + obj.category + ' (' + obj.title + ')</h3>' +
+                                    '<img src="' + obj.imagePath +'" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">'+
                                     '<p class="post-user">' + obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
                                     '<span class="post-decription">' + obj.descriptionPath + '</span>' +
                                     '</div>' +
@@ -1337,5 +1365,19 @@ var indexFunctions = {
         else {
             return '<a href="/posts?id=' + postId + '"><img src="/images/arrow_right.png" class="img-nav" alt=""></a>';
         }
+    },
+    getFileBase64: function(file) {
+        var self = this;
+        if(file) {
+            const promise = new Promise((resolve, reject) => {
+                var reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function (e) {
+                    resolve(e.target.result);
+                }
+            });
+            return promise;
+        }
+        return null;
     }
 };

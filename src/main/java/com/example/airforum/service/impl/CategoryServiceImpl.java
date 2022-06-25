@@ -26,16 +26,21 @@ public class CategoryServiceImpl implements CategoryService {
 
     public CategoryResponseDto createCategory(CategoryRequestDto categoryRequestDto) {
         Category category;
-        CategoryResponseDto categoryResponseDto=new CategoryResponseDto();
-        if( getByName(categoryRequestDto.getPostCategoryType())==null){
-             category = categoryRepository.save(categoryConvertor.convert(categoryRequestDto));
-             categoryResponseDto=categoryConvertor.convert(category);
-        }else{
+        CategoryResponseDto categoryResponseDto = null;
+        if (categoryRepository.getCategoryByPostCategory(categoryRequestDto.getPostCategoryType()) == null) {
+
+            category = categoryConvertor.convert(categoryRequestDto);
+            categoryRepository.save(category);
+            category=categoryRepository.getCategoryByPostCategory(categoryRequestDto.getPostCategoryType());
+            categoryResponseDto = categoryConvertor.convert(category);
+
+        } else {
             categoryResponseDto.setErrorText("Duplicate Category");
         }
 
         return categoryResponseDto;
     }
+
 
     public List<CategoryResponseDto> getAllCategory() {
         List<Category> category = categoryRepository.findAll();

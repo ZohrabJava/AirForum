@@ -67,17 +67,14 @@ public class PostServiceImpl {
         User admin = userRepository.getUserByUserName(userUpdateRequestDto.getUserName());
         Post post = postRepository.getPostById(userUpdateRequestDto.getId());
         if (admin == null) {
-            postUpdateResponseDto.setError("Super User or Admin  not found");
+            postUpdateResponseDto.setError("User not found");
             return postUpdateResponseDto;
         }
         if (post == null) {
             postUpdateResponseDto.setError("Post not found");
             return postUpdateResponseDto;
         }
-        if (admin.getRoles() == Roles.USER) {
-            postUpdateResponseDto.setError("User cant approve a post");
-            return postUpdateResponseDto;
-        }
+
         post.setPostState(postState);
         postRepository.save(post);
         return postUpdateResponseDto;
@@ -92,7 +89,9 @@ public class PostServiceImpl {
             if (title != null) {
                 posts = postRepository.getPostByTitleContains(title);
                 for (Post post : posts) {
-                    postResponseDto.add(postConvertor.convertor(post));
+                    if(post.getPostState()==PostState.Created) {
+                        postResponseDto.add(postConvertor.convertor(post));
+                    }
                 }
                 return postResponseDto;
             }
@@ -109,7 +108,9 @@ public class PostServiceImpl {
         }
         posts = postRepository.getPostByTitleContains(title);
         for (Post post : posts) {
-            postResponseDto.add(postConvertor.convertor(post));
+            if(post.getPostState()==PostState.Created) {
+                postResponseDto.add(postConvertor.convertor(post));
+            }
         }
         postResponseDto.removeIf(responseDto -> categoryRepository.getCategoryByPostCategory(responseDto.getCategory()) != category);
         return postResponseDto;

@@ -96,18 +96,18 @@ section {
 .bt-actions{
     list-style-type: none;
 }
-    .psy-header .actions .actions-left li, .psy-header .actions .actions-right li, .psy-header .navbar .navbar-item {
-        list-style-type: none;
-    }
+.psy-header .actions .actions-left li, .psy-header .actions .actions-right li, .psy-header .navbar .navbar-item {
+    list-style-type: none;
+}
 
-        .psy-header .navbar .navbar-item a {
-            font-weight: 500;
-            font-size: 14px;
-            line-height: 20px;
-            color: #001e28;
-            margin-right: 24px;
-            text-decoration: none;
-        }
+.psy-header .navbar .navbar-item a {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    color: #001e28;
+    margin-right: 24px;
+    text-decoration: none;
+}
 
 [role=button], a, button {
     cursor: pointer;
@@ -124,9 +124,9 @@ section {
     flex-direction: row;
 }
 
-    .psy-header .actions .actions-right:not(.one-item) li:first-child, .psy-message .user-placeholder {
-        margin-right: 12px;
-    }
+.psy-header .actions .actions-right:not(.one-item) li:first-child, .psy-message .user-placeholder {
+    margin-right: 12px;
+}
 
 .psy-btn.secondary-dark {
     border: 1px solid #001e28;
@@ -155,12 +155,12 @@ section {
     text-decoration: none;
 }
 
-    .psy-btn .psy-btn-text {
-        font-weight: 500;
-        font-size: 14px;
-        line-height: 20px;
-        text-align: center;
-    }
+.psy-btn .psy-btn-text {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+}
 
 .no-auth-page-section {
     padding-top: 16px;
@@ -229,8 +229,8 @@ img {
     background-color: #f3f7fb;
     border-radius: 60px 60px 0 0;
     padding: 48px 40px 0;
-   /* position: absolute;
-    bottom: 0px;*/
+    /* position: absolute;
+     bottom: 0px;*/
 }
 
 .reserved-rights {
@@ -242,13 +242,13 @@ img {
     align-items: center;
 }
 
-    .reserved-rights p {
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 20px;
-        color: #25272c;
-        font-family: Roboto;
-    }
+.reserved-rights p {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #25272c;
+    font-family: Roboto;
+}
 
 .head.head-with-icons {
     display: flex;
@@ -275,14 +275,14 @@ img {
     z-index: 999;
 }
 
-    .psy-popup[data-popup=login] .popup-content, .psy-popup[data-popup=popup-join-our-newsletter] .popup-content, .psy-popup[data-popup=register-therapist] .popup-content, .psy-popup[data-popup=register-user] .popup-content {
-        padding: 24px 32px 32px;
-        overflow: auto;
-    }
+.psy-popup[data-popup=login] .popup-content, .psy-popup[data-popup=popup-join-our-newsletter] .popup-content, .psy-popup[data-popup=register-therapist] .popup-content, .psy-popup[data-popup=register-user] .popup-content {
+    padding: 24px 32px 32px;
+    overflow: auto;
+}
 
-    .psy-popup.popup-width-424 .popup-content {
-        width: 424px;
-    }
+.psy-popup.popup-width-424 .popup-content {
+    width: 424px;
+}
 
 .popup-content {
     padding: 24px;
@@ -385,31 +385,31 @@ img {
     padding-top: 0;
 }
 
-    .input-wrap .content input {
-        width: 100%;
-        height: 40px;
-        border: 1px solid #b3bac3;
-        border-radius: 30px;
-        line-height: 20px;
-        color: #001e28;
-    }
+.input-wrap .content input {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #b3bac3;
+    border-radius: 30px;
+    line-height: 20px;
+    color: #001e28;
+}
 
-    .input-wrap .content select {
-        width: 100%;
-        height: 40px;
-        border: 1px solid #b3bac3;
-        border-radius: 30px;
-        line-height: 20px;
-        color: #001e28;
-    }
+.input-wrap .content select {
+    width: 100%;
+    height: 40px;
+    border: 1px solid #b3bac3;
+    border-radius: 30px;
+    line-height: 20px;
+    color: #001e28;
+}
 
-    .input-wrap .content input, .input-wrap textarea, .input-wrap select {
-        padding: 8px 12px 8px 16px;
-        font-size: 14px;
-        outline: 0;
-        font-weight: 400;
-        background-color: #fff;
-    }
+.input-wrap .content input, .input-wrap textarea, .input-wrap select {
+    padding: 8px 12px 8px 16px;
+    font-size: 14px;
+    outline: 0;
+    font-weight: 400;
+    background-color: #fff;
+}
 
 .p-top-16 {
     padding-top: 16px !important;
@@ -488,9 +488,9 @@ img {
     cursor: pointer;
 }
 
-    .row:hover {
-        background-color: #e8edef;
-    }
+.row:hover {
+    background-color: #e8edef;
+}
 
 .row-hover {
     background-color: #e8edef;
@@ -602,23 +602,23 @@ img {
     align-items: center;
 }
 
-    .card-image-center img, .card-image-left img {
-        width: 100px;
-        height: 100px;
-        border-radius: 12px;
-    }
+.card-image-center img, .card-image-left img {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+}
 
-    .card-image-center .card-title {
-        margin-top: 16px;
-    }
+.card-image-center .card-title {
+    margin-top: 16px;
+}
 
-    .card .card-description, .card-image-center .card-title {
-        font-weight: 400;
-        font-size: 14px;
-        line-height: 20px;
-        color: #66696d;
-        text-align: center;
-    }
+.card .card-description, .card-image-center .card-title {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #66696d;
+    text-align: center;
+}
 
 .text-center {
     text-align: center;
@@ -651,4 +651,17 @@ img {
     position: relative;
     top: 5px;
     margin-left: 10px;
+}
+
+.post-img{
+    height: 500px;
+    width: 500px;
+    margin-top: 5px;
+}
+
+.post-img-imp {
+    height: 200px !important;
+    width: 200px !important;
+    margin-top: 5px !important;
+    margin-bottom: 10px !important;
 }
