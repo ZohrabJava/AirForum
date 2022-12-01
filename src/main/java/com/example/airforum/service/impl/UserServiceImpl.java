@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService {
                 )
         );
 
-        String link = "http://192.168.8.72:8082/confirm?token=" + token;
+        String link = "http://localhost:8089/confirm?token=" + token;
         emailSender.send(
                 request.getEmail(),
                 buildEmail(request.getFirstName(), link));
@@ -89,7 +89,7 @@ public class UserServiceImpl implements UserService {
             userUpdateResponseDto.setErrorText("Wrong email");
             return userUpdateResponseDto;
         }
-        String link = "http://192.168.8.72:8082/index.html?token=" + confirmationTokenService.getTokenByUserId(user.getId());
+        String link = "http://localhost:8089/index.html?token=" + confirmationTokenService.getTokenByUserId(user.getId());
         emailSender.send(
                 email,
                 resetPassword(user.getFirstName(), link));

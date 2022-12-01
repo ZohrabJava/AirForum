@@ -12,7 +12,7 @@ import org.springframework.context.event.EventListener;
 import javax.mail.MessagingException;
 
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
-public class AirForumApplication {
+    public class AirForumApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(AirForumApplication.class, args);

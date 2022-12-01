@@ -15,7 +15,7 @@ var indexFunctions = {
             try{
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8082/userById/' + json.userId,
+                    url: 'http://localhost:8089/userById/' + json.userId,
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
                     success: function (resp) {
@@ -67,7 +67,7 @@ var indexFunctions = {
             const token = localStorage.getItem("token");
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8082/allCategory/',
+                url: 'http://localhost:8089/allCategory/',
                 contentType: 'application/json',
                 headers: { "Authorization": "Bearer " + token },
                 success: function (resp) {
@@ -139,8 +139,8 @@ var indexFunctions = {
             try {
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8082/login?username=' + data.username + '&password=' + data.password + '',
-                    //data: JSON.stringify(data),
+                    url: 'http://localhost:8089/login?username=' + data.username + '&password=' + data.password + '',
+                    //data: JSON.stringiy(data),
                     contentType: 'application/json',
                     error: function (xhr) {
                         if (xhr.status == 401) {
@@ -159,7 +159,7 @@ var indexFunctions = {
                             try{
                                 $.ajax({
                                     type: 'GET',
-                                    url: 'http://localhost:8082/user/' + resp.userName,
+                                    url: 'http://localhost:8089/user/' + resp.userName,
                                     contentType: 'application/json',
                                     headers: { "Authorization": "Bearer " + resp.access_token },
                                     error: function (xhr) {
@@ -253,7 +253,7 @@ var indexFunctions = {
             form.find("button[type='submit']").prop("disabled", true);
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:8082/creat',
+                url: 'http://localhost:8089/creat',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 success: function (resp) {
@@ -330,7 +330,7 @@ var indexFunctions = {
                 form.find("button[type='submit']").prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8082/post',
+                    url: 'http://localhost:8089/post',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
@@ -392,7 +392,7 @@ var indexFunctions = {
             const token = localStorage.getItem("token");
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:8082/category',
+                url: 'http://localhost:8089/category',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 headers: { "Authorization": "Bearer " + token },
@@ -442,7 +442,7 @@ var indexFunctions = {
             form.find("button[type='submit']").prop("disabled", true);
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:8082/resetPassword',
+                url: 'http://localhost:8089/resetPassword',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 success: function (resp) {
@@ -499,7 +499,7 @@ var indexFunctions = {
             form.find("button[type='submit']").prop("disabled", true);
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:8082/updatePassword',
+                url: 'http://localhost:8089/updatePassword',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 success: function (resp) {
@@ -610,7 +610,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8082/changeRole',
+                    url: 'http://localhost:8089/changeRole',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
@@ -655,7 +655,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8082/changeRole',
+                    url: 'http://localhost:8089/changeRole',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
@@ -700,7 +700,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8082/updateUser',
+                    url: 'http://localhost:8089/updateUser',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
@@ -745,7 +745,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8082/updateUser',
+                    url: 'http://localhost:8089/updateUser',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
@@ -789,7 +789,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8082/activatePost',
+                    url: 'http://localhost:8089/activatePost',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
@@ -842,7 +842,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8082/blockPost',
+                    url: 'http://localhost:8089/blockPost',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
@@ -889,7 +889,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8082/privatePost',
+                    url: 'http://localhost:8089/privatePost',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
@@ -938,7 +938,7 @@ var indexFunctions = {
 
                     $.ajax({
                         type: 'POST',
-                        url: 'http://localhost:8082/comment',
+                        url: 'http://localhost:8089/comment',
                         data: JSON.stringify(data),
                         contentType: 'application/json',
                         headers: {"Authorization": "Bearer " + token},
@@ -981,7 +981,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8082/searchPosts',
+                    url: 'http://localhost:8089/searchPosts',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
@@ -1034,7 +1034,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8082/getAllAdmins/',
+                    url: 'http://localhost:8089/getAllAdmins/',
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
                     success: function (resp) {
@@ -1064,7 +1064,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8082/getAllUsers',
+                    url: 'http://localhost:8089/getAllUsers',
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
                     success: function (resp) {
@@ -1094,7 +1094,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8082/waitingPosts',
+                    url: 'http://localhost:8089/waitingPosts',
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
                     success: function (resp) {
@@ -1121,7 +1121,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8082/getPostsByUserName/' + json.userName,
+                    url: 'http://localhost:8089/getPostsByUserName/' + json.userName,
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
                     success: function (resp) {
@@ -1152,7 +1152,7 @@ var indexFunctions = {
                 }
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8082/createdPosts' + idParam,
+                    url: 'http://localhost:8089/createdPosts' + idParam,
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
                     success: function (resp) {
@@ -1181,7 +1181,7 @@ var indexFunctions = {
                 $(".src-option").append(new Option('', '0'));
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8082/allCategory/',
+                    url: 'http://localhost:8089/allCategory/',
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
                     success: function (resp) {
@@ -1205,7 +1205,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8082/allCategory/',
+                    url: 'http://localhost:8089/allCategory/',
                     contentType: 'application/json',
                     headers: { "Authorization": "Bearer " + token },
                     success: function (resp) {
