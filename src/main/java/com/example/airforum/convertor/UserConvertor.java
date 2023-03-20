@@ -2,6 +2,7 @@ package com.example.airforum.convertor;
 
 import com.example.airforum.dto.userDto.UserResponseDto;
 import com.example.airforum.model.User;
+import com.example.airforum.util.Path;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -16,6 +17,7 @@ public class UserConvertor {
         userResponseDto.setEmail(user.getEmail());
         userResponseDto.setVerification(user.getEnabled());
         userResponseDto.setRole(user.getRoles().ordinal());
+        userResponseDto.setImagePath(user.getImagePath() == null ? null : Path.readPath(user.getImagePath()));
         return userResponseDto;
     }
 

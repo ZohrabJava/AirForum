@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html th:lang="${#locale.language}"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="theme-color" content="#323233"/>
+    <title>Home</title>
+    <link rel="stylesheet" media="all" type="text/css" th:href="@{/styles/cssandjs/index.css}">
+</head>
+<body>
+<div class="wrapper">
+    <section class="no-auth-page-section">
+        <header class="psy-header no-auth transparent">
+            <div class="container-xl psy-header-content">
+                <div class="psy-header-left-content">
+                    <a class="logo" th:href="@{/index(lang=${#locale.language})}">
+                        <div>
+                            <img th:src="@{/images/logo.png}" alt="" style="width: 150px; height: 65px;">
+                        </div>
+                    </a>
+                    <ul class="navbar">
+                        <li class="categories navbar-item hide"><a th:href="@{/categories(lang=${#locale.language})}"
+                                                                   th:text="#{navbar.categories}"/></li>
+                        <li class="mnAdmins navbar-item hide"><a th:href="@{/admins(lang=${#locale.language})}"
+                                                                 th:text="#{navbar.admins}"/></li>
+                        <li class="mnUsers navbar-item hide"><a th:href="@{/users(lang=${#locale.language})}"
+                                                                th:text="#{navbar.users}"/></li>
+                        <li class="mnPosts-for-approval navbar-item hide"><a
+                                th:href="@{/postsforapproval(lang=${#locale.language})}"
+                                th:text="#{navbar.posts_review}"/></li>
+                        <li class="mnMy-posts navbar-item hide"><a th:href="@{/myposts(lang=${#locale.language})}"
+                                                                   th:text="#{navbar.my_posts}"/></li>
+                        <li class="mnPosts navbar-item"><a th:href="@{/posts(lang=${#locale.language})}"
+                                                           th:text="#{navbar.posts}"/></li>
+                    </ul>
+
+                </div>
+                <div class="header-right-content-auth">
+                    <div class="actions">
+                        <ul class="actions-right header-no-auth">
+                            <li>
+                                <button class="psy-btn secondary-dark thick transparent psy-popup-show-btn"
+                                        data-popup-name="login">
+                                    <span class="psy-btn-text" th:text="#{index.login}"></span>
+                                </button>
+                            </li>
+                            <li>
+                                <button class="psy-btn primary thick psy-popup-show-btn" data-popup-name="registr"
+                                        data-type="standard">
+                                    <span class="psy-btn-text" th:text="#{index.register}"></span>
+                                </button>
+                            </li>
+                            <li>
+
+                            </li>
+                        </ul>
+                        <ul class="actions-right header-is-auth hide">
+                            <li><span class="head-fullname"></span></li>
+                            <a class="languages" th:href="@{/user/details(lang=${#locale.language})}">
+                                <img class="user-navbar" th:src="@{/images/user.jpg}" alt="" id = "userImg"/>
+                            </a>
+                            <li>
+                                <button class="psy-btn primary thick header-logout" data-type="standard">
+                                    <span class="psy-btn-text" th:text="#{index.logout}"></span>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="lang" style="display: flex; margin-left: 30px;">
+                        <button value="en" id="english" class="languages">
+                            <img th:src="@{/images/eng_icon.jpg}" alt="" style="border-radius: inherit;"/>
+
+                        </button>
+                        <button value="hy" id="armenian" class="languages">
+                            <img th:src="@{/images/arm_icon.jpg}" alt="" style="border-radius: inherit;"/>
+
+                        </button>
+                        <button value="ru" id="russian" class="languages">
+                            <img th:src="@{/images/rus_icon.jpg}" alt="" style="border-radius: inherit;"/>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+    </section>
+    <section class="why-site section-gray requirements-site">
+        <div class="section-gray-content container-xxl">
+            <div class="no-auth-page-section-content" style="align-items: flex-start;">
+                <div class="container-md" style="width: 250px; display: table-caption;">
+                    <img id="userBigImg" th:src="@{/images/user.jpg}" alt="" class="user-img"/>
+                    <button id="user-picture-text"  class="psy-btn primary thick" style="margin-top: 10px;width: 250px; justify-content: center; ">
+                        <span class="psy-btn-text" onclick="upload()" > Change user picture</span>
+                    </button>
+                    <p class="error"></p>
+                    <div class="content m-top-4">
+                        <form id="form-userprofile" autocomplete="off" action="myposts.html" method="post" enctype="multipart/form-data" >
+                            <input type="file" placeholder="Image Path" name="imagepath" id="imagepath" autocomplete="off" style="display: none">
+                            <button id="submit-img" type="submit" style="display: none">Upload</button>
+                        </form>
+                        <h1 th:text="${message}"></h1>
+                    </div>
+
+                    <div class="input-wrap has-right-i w-100 p-top-16">
+                        <label class="title" th:text="#{user.change_password}"></label>
+                        <label class="title" th:text="#{user.old_password}"></label>
+                        <div class="content m-top-4" style="width: 250px">
+                            <input type="password" placeholder="******************" name="password" autocomplete="off">
+                        </div>
+                        <label class="title" th:text="#{user.new_password}" style="margin-top: 10px;"></label>
+                        <div class="content m-top-4" style="width: 250px">
+                            <input type="password" placeholder="******************" name="password" autocomplete="off">
+                        </div>
+                    </div>
+                    <button class="psy-btn primary thick" style="margin-top: 10px; margin-left: 70%;">
+                        <span class="psy-btn-text" th:text="#{user.change}"></span>
+                    </button>
+                </div>
+                <div class="container-md" style="width: 700px;">
+                    <label class="title">Zohrab Hovhannisyan</label>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer class="psy-footer">
+        <div class="container-xxl">
+            <div class="reserved-rights">
+                <p style=" font-size: 24px;" th:text="#{footer}"></p>
+            </div>
+        </div>
+    </footer>
+</div>
+<script type="text/javascript" th:src="@{/js/cssandjs/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/cssandjs/index.js}"></script>
+
+<script>
+    $(document).ready(function () {
+        $("#english").click(function () {
+            var selectedOption = $('#english').val();
+            if (selectedOption != '') {
+                window.location.replace('?lang=' + selectedOption);
+            }
+        });
+    });
+    $(document).ready(function () {
+        $("#armenian").click(function () {
+            var selectedOption = $('#armenian').val();
+            if (selectedOption != '') {
+                window.location.replace('?lang=' + selectedOption);
+            }
+        });
+    });
+    $(document).ready(function () {
+        $("#russian").click(function () {
+            var selectedOption = $('#russian').val();
+            if (selectedOption != '') {
+                window.location.replace('?lang=' + selectedOption);
+            }
+        });
+    });
+    function upload(){
+        document.getElementById("imagepath").click();
+    }
+    const fileInput = document.getElementById("imagepath");
+    fileInput.addEventListener("change", handleFileSelect);
+
+    function handleFileSelect(event) {
+        console.log("yes")
+        document.getElementById("submit-img").click();
+    }
+</script>
+
+</body>
+</html>

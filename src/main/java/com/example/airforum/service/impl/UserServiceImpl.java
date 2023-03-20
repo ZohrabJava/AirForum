@@ -13,6 +13,7 @@ import com.example.airforum.service.UserService;
 import com.example.airforum.service.token.ConfirmationToken;
 import com.example.airforum.service.token.ConfirmationTokenRepository;
 import com.example.airforum.service.token.ConfirmationTokenService;
+import com.example.airforum.util.Path;
 import com.example.airforum.validator.EmailValidator;
 import com.example.airforum.validator.RegisterValidator;
 import lombok.AllArgsConstructor;
@@ -89,7 +90,7 @@ public class UserServiceImpl implements UserService {
             userUpdateResponseDto.setErrorText("Wrong email");
             return userUpdateResponseDto;
         }
-        String link = "http://localhost:8089/index.html?token=" + confirmationTokenService.getTokenByUserId(user.getId());
+        String link = "http://localhost:8089/index?token=" + confirmationTokenService.getTokenByUserId(user.getId());
         emailSender.send(
                 email,
                 resetPassword(user.getFirstName(), link));
@@ -436,5 +437,17 @@ public class UserServiceImpl implements UserService {
         return userRepository.enableAppUser(email);
     }
 
+    @Override
+    public UserResponseDto updateUserPicture(UserRequestDto userRequestDto) {
+        UserResponseDto dto = new UserResponseDto();
+        String imageDataString = userRequestDto.getImagePath();
+//        if (imageDataString.split(","))//Todo validation
+        String path = Path.savePath(imageDataString,userRequestDto.getUserName());
 
+        User user= getByName(userRequestDto.getUserName());
+        user.setImagePath(path);
+        userRepository.save(user);
+        dto = userConvertor.toUserDto(user);
+        return dto;
+    }
 }

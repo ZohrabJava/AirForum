@@ -23,4 +23,5 @@ public interface UserService {
     UserUpdateResponseDto resetPassword(String email);
 
     UserUpdateResponseDto updateUserPassword(String token, String password);
+    UserResponseDto updateUserPicture(UserRequestDto userRequestDto);
 }

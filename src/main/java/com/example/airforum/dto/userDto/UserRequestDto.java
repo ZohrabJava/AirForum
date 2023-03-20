@@ -21,6 +21,7 @@ public class UserRequestDto implements Serializable {
     private String userName;
     private String email;
     private String password;
+    private String imagePath;
 
 
 }

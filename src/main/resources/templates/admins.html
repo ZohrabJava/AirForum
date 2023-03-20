@@ -1,13 +1,14 @@
 ﻿<!DOCTYPE html>
 
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<html th:lang="${#locale.language}" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <meta name="theme-color" content="#323233" />
-    <title>Admins</title>
+    <title th:text="#{navbar.admins}"></title>
     <link rel="stylesheet" media="all" type="text/css" th:href="@{/styles/cssandjs/index.css}">
 </head>
 <body>
@@ -16,18 +17,18 @@
             <header class="psy-header no-auth transparent">
                 <div class="container-xl psy-header-content">
                     <div class="psy-header-left-content">
-                        <a class="logo" href="index.html">
-                            <span>ASKME</span>
+                        <a class="logo" th:href="@{/index(lang=${#locale.language})}">
+                            <div>
+                                <img th:src="@{/images/logo.png}" alt="" style="width: 150px; height: 65px;">
+                            </div>
                         </a>
                         <ul class="navbar">
-                            <li class="categories navbar-item hide"><a th:href="@{/categories}">Categories</a></li>
-                            <li class="mnAdmins navbar-item hide"><a th:href="@{/admins}">Admins</a></li>
-                            <li class="mnUsers navbar-item hide"><a th:href="@{/users}">Users</a></li>
-                            <li class="mnPosts-for-approval navbar-item hide">
-                                <a th:href="@{/postsforapproval}">Posts For Approval</a>
-                            </li>
-                            <li class="mnMy-posts navbar-item hide"><a th:href="@{/myposts}">My Posts</a></li>
-                            <li class="mnPosts navbar-item hide"><a th:href="@{/posts}">Posts</a></li>
+                            <li class="categories navbar-item hide"><a th:href="@{/categories(lang=${#locale.language})}" th:text="#{navbar.categories}"/></li>
+                            <li class="mnAdmins navbar-item hide"><a th:href="@{/admins(lang=${#locale.language})}" th:text="#{navbar.admins}"/></li>
+                            <li class="mnUsers navbar-item hide"><a th:href="@{/users(lang=${#locale.language})}" th:text="#{navbar.users}"/></li>
+                            <li class="mnPosts-for-approval navbar-item hide"><a th:href="@{/postsforapproval(lang=${#locale.language})}" th:text="#{navbar.posts_review}"/></li>
+                            <li class="mnMy-posts navbar-item hide" ><a th:href="@{/myposts(lang=${#locale.language})}" th:text="#{navbar.my_posts}"/></li>
+                            <li class="mnPosts navbar-item"><a th:href="@{/posts(lang=${#locale.language})}" th:text="#{navbar.posts}"/></li>
                         </ul>
                     </div>
                     <div class="header-right-content-auth">
@@ -49,11 +50,29 @@
                             <ul class="actions-right header-is-auth hide">
                                 <li><span class="head-fullname"></span></li>
                                 <li>
+                                    <a class="languages" th:href="@{/user/details(lang=${#locale.language})}">
+                                        <img class="user-navbar" th:src="@{/images/user.jpg}" alt="" id = "userImg"/>
+                                    </a>
+                                </li>
+                                <li>
                                     <button class="psy-btn primary thick header-logout" data-type="standard">
-                                        <span class="psy-btn-text">Log out</span>
+                                        <span class="psy-btn-text" th:text="#{index.logout}"></span>
                                     </button>
                                 </li>
                             </ul>
+                        </div>
+                        <div id="lang" style="display: flex; margin-left: 30px;">
+                            <button value="en" id="english" class="languages">
+                                <img th:src="@{/images/eng_icon.jpg}" alt="" style="border-radius: inherit;"/>
+
+                            </button>
+                            <button value="hy" id="armenian" class="languages">
+                                <img th:src="@{/images/arm_icon.jpg}" alt="" style="border-radius: inherit;"/>
+
+                            </button>
+                            <button value="ru" id="russian" class="languages">
+                                <img th:src="@{/images/rus_icon.jpg}" alt="" style="border-radius: inherit;"/>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -62,26 +81,26 @@
         <section class="grid">
             <div class="container-xxl">
                 <div class="head">
-                    <h2 class="title">Admins</h2>
+                    <h2 class="title" th:text="#{navbar.admins}"></h2>
                     <div class="hide bt-actions">
                         <input type="hidden" class="row-id" value="0" />
                         <button class="psy-btn primary thick remove-admin-user">
-                            <span class="psy-btn-text">Remove</span>
+                            <span class="psy-btn-text" th:text="#{admin.remove}"></span>
                         </button>
                         <button class="psy-btn primary hide thick block-admin-user">
-                            <span class="psy-btn-text">Block</span>
+                            <span class="psy-btn-text" th:text="#{admin.block}"></span>
                         </button>
                         <button class="psy-btn primary hide thick unblock-admin-user">
-                            <span class="psy-btn-text">Unblock</span>
+                            <span class="psy-btn-text" th:text="#{admin.unblock}"></span>
                         </button>
                     </div>
                 </div>
                 <div class="table">
-                    <div class="th th-left-radius">First Name</div>
-                    <div class="th">Last Name</div>
-                    <div class="th">Email</div>
-                    <div class="th">UserName</div>
-                    <div class="th">Status</div>
+                    <div class="th th-left-radius" th:text="#{register.first_name_hint}"></div>
+                    <div class="th" th:text="#{register.last_name_hint}"></div>
+                    <div class="th" th:text="#{register.email_hint}"></div>
+                    <div class="th" th:text="#{login.username_hint}"></div>
+                    <div class="th" th:text="#{admin.status}"></div>
                 </div>
                 <div class="row-data">
                 </div>
@@ -90,12 +109,38 @@
         <footer class="psy-footer">
             <div class="container-xxl">
                 <div class="reserved-rights">
-                    <p>© 2022 AskMe. All rights reserved</p>
+                    <p style=" font-size: 24px;" th:text="#{footer}"></p>
                 </div>
             </div>
         </footer>
     </div>
     <script type="text/javascript" th:src="@{/js/cssandjs/jquery/jquery.min.js}"></script>
-    <script type="text/javascript" th:src="@{/js/cssandjs/index.js}"></script>
+    <script th:inline="javascript" th:src="@{/js/cssandjs/index.js}"></script>
+    <script >
+        $(document).ready(function () {
+            $("#english").click(function () {
+                var selectedOption = $('#english').val();
+                if (selectedOption != '') {
+                    window.location.replace('?lang=' + selectedOption);
+                }
+            });
+        });
+        $(document).ready(function () {
+            $("#armenian").click(function () {
+                var selectedOption = $('#armenian').val();
+                if (selectedOption != '') {
+                    window.location.replace('?lang=' + selectedOption);
+                }
+            });
+        });
+        $(document).ready(function () {
+            $("#russian").click(function () {
+                var selectedOption = $('#russian').val();
+                if (selectedOption != '') {
+                    window.location.replace('?lang=' + selectedOption);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -1,7 +1,8 @@
 package com.example.airforum.config;
 
-import com.example.airforum.filter.CustomAuthenticationFilter;
-import com.example.airforum.filter.CustomAuthorizationFilter;
+
+import com.example.airforum.filter.JwtAuthenticationFilter;
+import com.example.airforum.filter.JwtAuthorizationFilter;
 import com.example.airforum.repository.UserRepository;
 import com.example.airforum.service.UserService;
 import com.example.airforum.service.impl.UserServiceImpl;
@@ -33,72 +34,44 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
         jsr250Enabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final CustomAuthorizationFilter authorizationFilter;
     private UserDetailsService userDetailsService;
-
+    private final JwtAuthorizationFilter authorizationFilter;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .userDetailsService(userDetailsService)
+        auth.userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                .csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/**")
-                .permitAll();
+
         http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers("/user/register", "/login", "/index","/user/**","/resetPassword",
+                        "/posts","/allCategory","/createdPosts","/searchPosts",
+                        "/js/**","/styles/**","/images/**",
+                        "/myposts","/postsforapproval","/users","/admins","/categories").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .loginPage("/index")
+                .permitAll()
+                .defaultSuccessUrl("/")
+                .permitAll()
+                .and()
+                .logout()
+                .permitAll()
+                .and()
+                .httpBasic()
+                .and()
+                .addFilterBefore(authorizationFilter , UsernamePasswordAuthenticationFilter.class)
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.authorizeRequests().antMatchers("/login/**").permitAll();
-        http.authorizeRequests().anyRequest().authenticated();
-        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
-        http.addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
-//        http.authorizeRequests().antMatchers("/user/{username}").authenticated();
-//        http
-//                .formLogin()
-//                .loginPage("/")
-//                .failureUrl("/login-error.html")
-//                .and()
-//                .logout()
-//                .logoutSuccessUrl("/index.html")
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/")
-//                .permitAll()
-//                .antMatchers("/home")
-//                .hasAuthority("USER")
-//                .antMatchers("/admin")
-//                .hasAuthority("ADMIN")
-//                .anyRequest()
-//                .authenticated()
-//                .and()
-//                .httpBasic();
-
-    }
-
-
-    //    @Bean
-//    public DaoAuthenticationProvider daoAuthenticationProvider() {
-//        DaoAuthenticationProvider provider =
-//                new DaoAuthenticationProvider();
-//        provider.setPasswordEncoder(bCryptPasswordEncoder);
-//        provider.setUserDetailsService(userDetailsService);
-//        return provider;
-//    }
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }

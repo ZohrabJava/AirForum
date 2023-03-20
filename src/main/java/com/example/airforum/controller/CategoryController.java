@@ -22,8 +22,6 @@ public class CategoryController {
     private final CategoryConvertor convertor;
 
     @PostMapping("/category")
-    @Operation(security = @SecurityRequirement(name = "Bearer"))
-    @PreAuthorize("hasAuthority('SuperAdmin')")
     public CategoryResponseDto creatCategory(@RequestBody CategoryRequestDto categoryRequestDto) {
         return categoryService.createCategory(categoryRequestDto);
     }

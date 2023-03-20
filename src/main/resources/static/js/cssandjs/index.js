@@ -12,25 +12,24 @@ var indexFunctions = {
         if (data) {
             const json = JSON.parse(data);
             const token = localStorage.getItem("token");
-            try{
+            try {
                 $.ajax({
                     type: 'GET',
                     url: 'http://localhost:8089/userById/' + json.userId,
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             data = resp;
                             localStorage.setItem("userData", JSON.stringify(resp));
-                        }
-                        else {
+                        } else {
                             data = null;
                         }
                         self.isAuthorized(data);
                     }
                 });
-            }
-            catch (error){
+
+            } catch (error) {
                 self.logOut();
             }
         }
@@ -67,9 +66,9 @@ var indexFunctions = {
             const token = localStorage.getItem("token");
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8089/allCategory/',
+                url: 'http://localhost:8089/allCategory',
                 contentType: 'application/json',
-                headers: { "Authorization": "Bearer " + token },
+                headers: {"Authorization": "Bearer " + token},
                 success: function (resp) {
                     if (resp) {
                         $(".cat-option").html('');
@@ -95,11 +94,11 @@ var indexFunctions = {
         });
 
         $(document).on("click", ".psy-popup-close-btn[data-popup-name='forgotpass']", function () {
-            window.location.href = "index.html";
+            window.location.href = "index";
         });
 
         $(document).on("click", ".psy-popup-close-btn[data-popup-name='changepassword']", function () {
-            window.location.href = "index.html";
+            window.location.href = "index";
         });
 
         $("#form-login").on("submit", function (e) {
@@ -118,16 +117,14 @@ var indexFunctions = {
             if (data.username.length == 0) {
                 username.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 username.css("border-color", borderColor);
             }
 
             if (data.password.length == 0) {
                 password.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 password.css("border-color", borderColor);
             }
 
@@ -156,23 +153,22 @@ var indexFunctions = {
                             localStorage.setItem("token", resp.access_token);
                             localStorage.setItem("username", resp.userName);
 
-                            try{
+                            try {
                                 $.ajax({
                                     type: 'GET',
                                     url: 'http://localhost:8089/user/' + resp.userName,
                                     contentType: 'application/json',
-                                    headers: { "Authorization": "Bearer " + resp.access_token },
+                                    headers: {"Authorization": "Bearer " + resp.access_token},
                                     error: function (xhr) {
 
                                     },
                                     success: function (resp) {
                                         localStorage.setItem("userData", JSON.stringify(resp));
-                                        self.isAuthorized(resp);
-                                        window.location.href = "index.html";
+                                        logeden = true;
+                                        window.location.href = "index";
                                     }
                                 });
-                            }
-                            catch (error) {
+                            } catch (error) {
 
                             }
                         } else {
@@ -181,8 +177,7 @@ var indexFunctions = {
                         form.find("button[type='submit']").prop("disabled", false);
                     }
                 });
-            }
-            catch (error){
+            } catch (error) {
                 form.find("button[type='submit']").prop("disabled", false);
             }
         });
@@ -209,40 +204,35 @@ var indexFunctions = {
             if (data.firstName.length == 0) {
                 firstName.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 firstName.css("border-color", borderColor);
             }
 
             if (data.lastName.length == 0) {
                 lastName.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 lastName.css("border-color", borderColor);
             }
 
             if (data.email.length == 0) {
                 email.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 email.css("border-color", borderColor);
             }
 
             if (data.userName.length == 0) {
                 userName.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 userName.css("border-color", borderColor);
             }
 
             if (data.password.length == 0) {
                 password.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 password.css("border-color", borderColor);
             }
 
@@ -260,8 +250,7 @@ var indexFunctions = {
                     if (resp) {
                         if (resp.errorText && resp.errorText.length > 0) {
                             form.find("p[class='error']").text(resp.errorText);
-                        }
-                        else {
+                        } else {
                             $(".psy-popup[data-popup='registr']").hide();
                             form.find("input[name='firstName']").val("");
                             form.find("input[name='lastName']").val("");
@@ -270,8 +259,7 @@ var indexFunctions = {
                             form.find("input[name='password']").val("");
                             localStorage.setItem("userData", JSON.stringify(resp));
                         }
-                    }
-                    else {
+                    } else {
                         form.find("p[class='error']").text("Something wrong");
                     }
                     form.find("button[type='submit']").prop("disabled", false);
@@ -294,7 +282,7 @@ var indexFunctions = {
                 let isValid = true;
                 let base64 = "";
 
-                if(document.getElementById("imagepath").files){
+                if (document.getElementById("imagepath").files) {
                     const file = document.getElementById("imagepath").files[0];
                     base64 = await self.getFileBase64(file);
                 }
@@ -310,16 +298,14 @@ var indexFunctions = {
                 if (data.title.length == 0) {
                     title.css("border-color", "red");
                     isValid = false;
-                }
-                else {
+                } else {
                     title.css("border-color", borderColor);
                 }
 
                 if (data.descriptionPath.length == 0) {
                     description.css("border-color", "red");
                     isValid = false;
-                }
-                else {
+                } else {
                     description.css("border-color", borderColor);
                 }
 
@@ -333,13 +319,12 @@ var indexFunctions = {
                     url: 'http://localhost:8089/post',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             if (resp.errorText && resp.errorText.length > 0) {
                                 form.find("p[class='error']").text(resp.errorText);
-                            }
-                            else {
+                            } else {
                                 $(".psy-popup[data-popup='createpost']").hide();
                                 form.find("input[name='title']").val("");
                                 form.find("input[name='description']").val("");
@@ -355,11 +340,50 @@ var indexFunctions = {
                                     '</div>';
                                 $(".row-data").append(html);
                             }
-                        }
-                        else {
+                        } else {
                             form.find("p[class='error']").text("Something wrong");
                         }
                         form.find("button[type='submit']").prop("disabled", false);
+                    }
+                });
+            }
+        });
+        $("#form-userprofile").on("submit", async function (e) {
+            e.preventDefault();
+
+            let userData = localStorage.getItem("userData");
+            const token = localStorage.getItem("token");
+            if (userData) {
+                const json = JSON.parse(userData);
+                const form = $(this);
+                form.find("p[class='error']").text("");
+
+                let base64 = "";
+                if (document.getElementById("imagepath").files) {
+                    const file = document.getElementById("imagepath").files[0];
+                    base64 = await self.getFileBase64(file);
+                }
+
+                const data = {
+                    userName: json.userName,
+                    imagePath: (base64 ? base64 : "")
+                }
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://localhost:8089/upload',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    headers: {"Authorization": "Bearer " + token},
+                    success: function (resp) {
+                        if (resp) {
+                            console.log(resp)
+                            localStorage.setItem("userData", JSON.stringify(resp));
+                            document.getElementById("userImg").src = data.imagePath;
+                            document.getElementById("userBigImg").src = data.imagePath;
+                            form.find("p[class='error']").text("okayyyyyyyyyyyyyyyyyy");
+                        } else {
+                            //error
+                        }
                     }
                 });
             }
@@ -379,8 +403,7 @@ var indexFunctions = {
             if (data.postCategoryType.length == 0) {
                 category.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 category.css("border-color", borderColor);
             }
 
@@ -395,13 +418,12 @@ var indexFunctions = {
                 url: 'http://localhost:8089/category',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
-                headers: { "Authorization": "Bearer " + token },
+                headers: {"Authorization": "Bearer " + token},
                 success: function (resp) {
                     if (resp) {
                         if (resp.errorText && resp.errorText.length > 0) {
                             form.find("p[class='error']").text(resp.errorText);
-                        }
-                        else {
+                        } else {
                             $(".psy-popup[data-popup='createcategories']").hide();
                             let html = '<div class="row" data-id="' + resp.id + '">' +
                                 '<div class="td" style="width:1340px">' + resp.postCategoryType + '</div>' +
@@ -409,8 +431,7 @@ var indexFunctions = {
                             $(".row-data").append(html);
                             category.val("");
                         }
-                    }
-                    else {
+                    } else {
                         form.find("p[class='error']").text("Something wrong");
                     }
                     form.find("button[type='submit']").prop("disabled", false);
@@ -431,8 +452,7 @@ var indexFunctions = {
             if (data.email.length == 0) {
                 email.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 email.css("border-color", borderColor);
             }
 
@@ -449,9 +469,8 @@ var indexFunctions = {
                     if (resp) {
                         if (resp.errorText && resp.errorText.length > 0) {
                             form.find("p[class='error']").text(resp.errorText);
-                        }
-                        else {
-                            window.location.href = "index.html";
+                        } else {
+                            window.location.href = "index";
                         }
                     }
                     form.find("button[type='submit']").prop("disabled", false);
@@ -475,16 +494,14 @@ var indexFunctions = {
             if (data.password.length == 0) {
                 password.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 password.css("border-color", borderColor);
             }
 
             if (data.confirmpassword.length == 0) {
                 confirmpassword.css("border-color", "red");
                 isValid = false;
-            }
-            else {
+            } else {
                 confirmpassword.css("border-color", borderColor);
             }
 
@@ -506,16 +523,14 @@ var indexFunctions = {
                     if (resp) {
                         if (resp.errorText && resp.errorText.length > 0) {
                             form.find("p[class='error']").text(resp.errorText);
-                        }
-                        else {
-                            window.location.href = "index.html";
+                        } else {
+                            window.location.href = "index";
                         }
                     }
                     form.find("button[type='submit']").prop("disabled", false);
                 }
             });
         });
-
 
         //click on row
         $(document).on("click", ".row", function () {
@@ -528,19 +543,17 @@ var indexFunctions = {
             let id = row.attr("data-id");
             $(".row-id").val(id);
             var uri = window.location.href;
-            if (uri.indexOf("admins") > 0 || uri.indexOf("users") > 0) {
+            if (uri.indexOf("/admins") > 0 || uri.indexOf("/users") > 0) {
                 var state = row.find(".user-state").html();
                 $(".remove-admin-user").removeClass("hide");
-                if (state == "true") {
+                if (state == "Active" || state == "Ակտիվ" || state == "Активный") {
                     $(".block-admin-user").removeClass("hide");
                     $(".unblock-admin-user").addClass("hide");
-                }
-                else {
+                } else {
                     $(".block-admin-user").addClass("hide");
                     $(".unblock-admin-user").removeClass("hide");
                 }
-            }
-            else if (uri.indexOf("postsforapproval") > 0) {
+            } else if (uri.indexOf("/postsforapproval") > 0) {
                 $(".approve-forum").removeClass("hide");
                 $(".block-forum").removeClass("hide");
                 $(".descr-forum").removeClass("hide");
@@ -551,15 +564,13 @@ var indexFunctions = {
                 $(".psy-popup-cat").text(cat);
                 $(".psy-popup-title").text(title);
                 $(".post-descr").text(desc);
-                if(img) {
+                if (img) {
                     $(".post-img").removeClass("hide");
                     $(".post-img").attr("src", img);
-                }
-                else{
+                } else {
                     $(".post-img").addClass("hide");
                 }
-            }
-            else if (uri.indexOf("myposts") > 0) {
+            } else if (uri.indexOf("/myposts") > 0) {
                 $(".descr-forum").removeClass("hide");
                 $(".approve-forum").addClass("hide");
                 $(".block-forum").addClass("hide");
@@ -572,11 +583,10 @@ var indexFunctions = {
                 $(".psy-popup-cat").text(cat);
                 $(".popup-title").text(title);
                 $(".post-descr").text(desc);
-                if(img) {
+                if (img) {
                     $(".post-img").removeClass("hide");
                     $(".post-img").attr("src", img);
-                }
-                else{
+                } else {
                     $(".post-img").addClass("hide");
                 }
 
@@ -584,13 +594,13 @@ var indexFunctions = {
                 if (status == "Created") {
                     $(".block-forum").removeClass("hide");
                     $(".privet-forum").removeClass("hide");
-                }
-                else if (status == "Private") {
+                } else if (status == "Private") {
                     $(".approve-forum").removeClass("hide");
                 }
+            } else if (uri.indexOf("/user/details") > 0) {
+
             }
         });
-
 
         //to admin
         $(document).on("click", ".add-admin-user", function () {
@@ -613,26 +623,23 @@ var indexFunctions = {
                     url: 'http://localhost:8089/changeRole',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             if (resp.errorText && resp.errorText.length > 0) {
                                 alert(resp.errorText);
-                            }
-                            else {
+                            } else {
                                 $(".row-id").val('0');
                                 $(".bt-actions").addClass("hide");
                                 $(".row-hover").remove();
                             }
-                        }
-                        else {
+                        } else {
                             alert("Something wrong");
                         }
                         btn.prop("disabled", false);
                     }
                 });
-            }
-            else {
+            } else {
                 alert("Something wrong");
             }
         });
@@ -658,26 +665,23 @@ var indexFunctions = {
                     url: 'http://localhost:8089/changeRole',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             if (resp.errorText && resp.errorText.length > 0) {
                                 alert(resp.errorText);
-                            }
-                            else {
+                            } else {
                                 $(".row-id").val('0');
                                 $(".bt-actions").addClass("hide");
                                 $(".row-hover").remove();
                             }
-                        }
-                        else {
+                        } else {
                             alert("Something wrong");
                         }
                         btn.prop("disabled", false);
                     }
                 });
-            }
-            else {
+            } else {
                 alert("Something wrong");
             }
         });
@@ -703,26 +707,24 @@ var indexFunctions = {
                     url: 'http://localhost:8089/updateUser',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             if (resp.errorText && resp.errorText.length > 0) {
                                 alert(resp.errorText);
-                            }
-                            else {
-                                $(".row-hover").find(".user-state").text("false");
+                            } else {
+                                $(".row-hover").find(".user-state")
+                                    .text(document.documentElement.lang == "hy" ? "Պասիվ" : document.documentElement.lang == "ru" ? "Неактивный" : "Inactive");
                                 $(".row-id").val('0');
                                 $(".bt-actions").addClass("hide");
                             }
-                        }
-                        else {
+                        } else {
                             alert("Something wrong");
                         }
                         btn.prop("disabled", false);
                     }
                 });
-            }
-            else {
+            } else {
                 alert("Something wrong");
             }
         });
@@ -748,26 +750,24 @@ var indexFunctions = {
                     url: 'http://localhost:8089/updateUser',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             if (resp.errorText && resp.errorText.length > 0) {
                                 alert(resp.errorText);
-                            }
-                            else {
-                                $(".row-hover").find(".user-state").text("true");
+                            } else {
+                                $(".row-hover").find(".user-state")
+                                    .text(document.documentElement.lang == "hy" ? "Ակտիվ" : document.documentElement.lang == "ru" ? "Активный" : "Active");
                                 $(".row-id").val('0');
                                 $(".bt-actions").addClass("hide")
                             }
-                        }
-                        else {
+                        } else {
                             alert("Something wrong");
                         }
                         btn.prop("disabled", false);
                     }
                 });
-            }
-            else {
+            } else {
                 alert("Something wrong");
             }
         });
@@ -792,35 +792,31 @@ var indexFunctions = {
                     url: 'http://localhost:8089/activatePost',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             if (resp.errorText && resp.errorText.length > 0) {
                                 alert(resp.errorText);
-                            }
-                            else {
+                            } else {
                                 var uri = window.location.href;
                                 $(".row-id").val('0');
                                 $(".descr-forum").addClass("hide");
                                 $(".approve-forum").addClass("hide");
                                 $(".block-forum").addClass("hide");
                                 $(".privet-forum").addClass("hide");
-                                if (uri.indexOf("postsforapproval") > 0){
+                                if (uri.indexOf("/postsforapproval") > 0) {
                                     $(".row-hover").remove();
-                                }
-                                else {
+                                } else {
                                     $(".row-hover").find(".ds-status").text("Created");
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             alert("Something wrong");
                         }
                         btn.prop("disabled", false);
                     }
                 });
-            }
-            else {
+            } else {
                 alert("Something wrong");
             }
         });
@@ -845,13 +841,12 @@ var indexFunctions = {
                     url: 'http://localhost:8089/blockPost',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             if (resp.errorText && resp.errorText.length > 0) {
                                 alert(resp.errorText);
-                            }
-                            else {
+                            } else {
                                 $(".row-id").val('0');
                                 $(".descr-forum").addClass("hide");
                                 $(".approve-forum").addClass("hide");
@@ -859,15 +854,13 @@ var indexFunctions = {
                                 $(".privet-forum").addClass("hide");
                                 $(".row-hover").remove();
                             }
-                        }
-                        else {
+                        } else {
                             alert("Something wrong");
                         }
                         btn.prop("disabled", false);
                     }
                 });
-            }
-            else {
+            } else {
                 alert("Something wrong");
             }
         });
@@ -892,13 +885,12 @@ var indexFunctions = {
                     url: 'http://localhost:8089/privatePost',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             if (resp.errorText && resp.errorText.length > 0) {
                                 alert(resp.errorText);
-                            }
-                            else {
+                            } else {
                                 $(".row-id").val('0');
                                 $(".descr-forum").addClass("hide");
                                 $(".approve-forum").addClass("hide");
@@ -906,15 +898,13 @@ var indexFunctions = {
                                 $(".privet-forum").addClass("hide");
                                 $(".row-hover").find(".ds-status").text("Private");
                             }
-                        }
-                        else {
+                        } else {
                             alert("Something wrong");
                         }
                         btn.prop("disabled", false);
                     }
                 });
-            }
-            else {
+            } else {
                 alert("Something wrong");
             }
         });
@@ -960,8 +950,7 @@ var indexFunctions = {
                             }
                         }
                     });
-                }
-                else {
+                } else {
                     alert("Something wrong");
                 }
             }
@@ -973,18 +962,17 @@ var indexFunctions = {
             let userData = localStorage.getItem("userData");
             const token = localStorage.getItem("token");
 
-            if (userData) {
-                const data = {
-                    title: $(".src-title").val(),
-                    categoryId: parseInt($(".src-option").val())
-                }
-
+            const data = {
+                title: $(".src-title").val(),
+                categoryId: parseInt($(".src-option").val())
+            }
+            if (data) {
                 $.ajax({
                     type: 'POST',
                     url: 'http://localhost:8089/searchPosts',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    // headers: { "Authorization": "Bearer " + token },
                     success: function (resp) {
                         if (resp) {
                             $(".post-container").html('');
@@ -992,51 +980,66 @@ var indexFunctions = {
                                 let html = '<div class="post-data">' +
                                     '<div class="post-box" >' +
                                     '<h3>' + obj.category + ' (' + obj.title + ')</h3>' +
-                                    '<img src="' + obj.imagePath +'" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">'+
+                                    '<img src="' + obj.imagePath + '" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">' +
                                     '<p class="post-user">' + obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
                                     '<span class="post-decription">' + obj.descriptionPath + '</span>' +
                                     '</div>' +
                                     '<div class="comment-container">' + self.getCommentList(obj.comments) + '</div>' +
                                     '<div class="input-wrap w-100 p-top-24">' +
-                                    '<div class="content m-top-4">' +
-                                    '<input class="add-comment" type="text" data-post-id="' + obj.postId + '" placeholder="Write a comment…" autocomplete="off">' +
-                                    '</div>' +
-                                    '</div>' +
-                                    '</div>';
+                                    '<div class="content m-top-4">';
+                                if (userData) {
+                                    html += '<input class="add-comment" style="margin-bottom: 100px" type="text" data-post-id="' + obj.postId + '" placeholder="Write a comment…" autocomplete="off">' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '</div>';
+                                } else {
+                                    html += '</div>' +
+                                        '</div>' +
+                                        '</div>';
+                                }
 
                                 $(".post-container").append(html);
                             });
                         }
                     }
                 });
-            }
-            else {
+            } else {
                 alert("Something wrong");
             }
         });
 
     },
     init: function () {
+        let active = document.documentElement.lang == "hy" ? "Ակտիվ" : document.documentElement.lang == "ru" ? "Активный" : "Active"
+        let inactive = document.documentElement.lang == "hy" ? "Պասիվ" : document.documentElement.lang == "ru" ? "Неактивный" : "Inactive"
         var self = this;
         let userData = localStorage.getItem("userData");
         const token = localStorage.getItem("token");
         var uri = window.location.href;
         if (userData) {
+
             const json = JSON.parse(userData);
-            if (uri.indexOf("admins") > 0) {
+
+            if (json.imagePath !==null && json.imagePath.toString().trim().length > 0){
+                document.getElementById("userImg").src = json.imagePath;
+            }
+
+            if (uri.indexOf("/admins") > 0) {
                 // $(".psy-footer").css("position", "absolute");
                 // $(".psy-footer").css("bottom", "0");
                 if (json.role == 2 || json.role == 1) {
-                    window.location.href = "index.html";
+                    window.location.href = "index";
                 } else {
                     $(".remove-admin-user").addClass("hide");
                 }
+
+
 
                 $.ajax({
                     type: 'GET',
                     url: 'http://localhost:8089/getAllAdmins/',
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
@@ -1045,7 +1048,7 @@ var indexFunctions = {
                                     '<div class="td">' + obj.lastName + '</div>' +
                                     '<div class="td">' + obj.email + '</div>' +
                                     '<div class="td">' + obj.userName + '</div>' +
-                                    '<div class="td user-state">' + (obj.verification ? "true" : "false") + '</div>' +
+                                    '<div class="td user-state">' + (obj.verification ? active : inactive) + '</div>' +
                                     '</div>';
                                 $(".row-data").append(html);
                             });
@@ -1057,16 +1060,18 @@ var indexFunctions = {
                 // $(".psy-footer").css("position", "absolute");
                 // $(".psy-footer").css("bottom", "0");
                 if (json.role == 2) {
-                    window.location.href = "index.html";
+                    window.location.href = "index";
                 } else if (json.role == 0 || json.role == 1) {
                     $(".add-admin-user").removeClass("hide");
                 }
+
+
 
                 $.ajax({
                     type: 'GET',
                     url: 'http://localhost:8089/getAllUsers',
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
@@ -1075,7 +1080,7 @@ var indexFunctions = {
                                     '<div class="td">' + obj.lastName + '</div>' +
                                     '<div class="td">' + obj.email + '</div>' +
                                     '<div class="td">' + obj.userName + '</div>' +
-                                    '<div class="td user-state">' + (obj.verification ? "true" : "false") + '</div>' +
+                                    '<div class="td user-state">' + (obj.verification ? active : inactive) + '</div>' +
                                     '</div>';
                                 $(".row-data").append(html);
                             });
@@ -1083,20 +1088,22 @@ var indexFunctions = {
                     }
                 });
             }
-            else if (uri.indexOf("postsforapproval") > 0) {
+            else if (uri.indexOf("/postsforapproval") > 0) {
                 $(".th").css("width", "450px");
                 // $(".psy-footer").css("position", "absolute");
                 // $(".psy-footer").css("bottom", "0");
 
+
+
                 if (json.role == 2) {
-                    window.location.href = "index.html";
+                    window.location.href = "index";
                 }
 
                 $.ajax({
                     type: 'GET',
                     url: 'http://localhost:8089/waitingPosts',
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
@@ -1113,17 +1120,19 @@ var indexFunctions = {
                     }
                 });
             }
-            else if (uri.indexOf("myposts") > 0) {
+            else if (uri.indexOf("/myposts") > 0) {
                 $(".th").css("width", "335px");
                 $(".navigation").css("width", "30px");
                 // $(".psy-footer").css("position", "absolute");
                 // $(".psy-footer").css("bottom", "0");
 
+
+
                 $.ajax({
                     type: 'GET',
                     url: 'http://localhost:8089/getPostsByUserName/' + json.userName,
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
@@ -1143,32 +1152,34 @@ var indexFunctions = {
                     }
                 });
             }
-            else if (uri.indexOf("posts") > 0) {
+            else if (uri.indexOf("/posts") > 0) {
                 const token = localStorage.getItem("token");
                 let idParam = "";
                 const id = self.getRequestParam('id');
-                if(id){
+                if (id) {
                     idParam = "/" + id;
                 }
+
+
                 $.ajax({
                     type: 'GET',
                     url: 'http://localhost:8089/createdPosts' + idParam,
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
                                 let html = '<div class="post-data">' +
                                     '<div class="post-box" >' +
                                     '<h3>' + obj.category + ' (' + obj.title + ')</h3>' +
-                                    '<img src="' + obj.imagePath +'" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">'+
+                                    '<img src="' + obj.imagePath + '" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">' +
                                     '<p class="post-user">' + obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
                                     '<span class="post-decription">' + obj.descriptionPath + '</span>' +
                                     '</div>' +
                                     '<div class="comment-container">' + self.getCommentList(obj.comments) + '</div>' +
                                     '<div class="input-wrap w-100 p-top-24">' +
                                     '<div class="content m-top-4">' +
-                                    '<input class="add-comment" type="text" data-post-id="' + obj.postId + '" placeholder="Write a comment…" autocomplete="off">' +
+                                    '<input class="add-comment" style="margin-bottom: 100px" type="text" data-post-id="' + obj.postId + '" placeholder="Write a comment…" autocomplete="off">' +
                                     '</div>' +
                                     '</div>' +
                                     '</div>';
@@ -1181,9 +1192,9 @@ var indexFunctions = {
                 $(".src-option").append(new Option('', '0'));
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8089/allCategory/',
+                    url: 'http://localhost:8089/allCategory',
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
@@ -1194,20 +1205,22 @@ var indexFunctions = {
                 });
 
             }
-            else if (uri.indexOf("categories") > 0) {
+            else if (uri.indexOf("/categories") > 0) {
                 $(".th").css("width", "1340px");
                 // $(".psy-footer").css("position", "absolute");
                 // $(".psy-footer").css("bottom", "0");
 
                 if (json.role != 0) {
-                    window.location.href = "index.html";
+                    window.location.href = "index";
                 }
+
+
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8089/allCategory/',
+                    url: 'http://localhost:8089/allCategory',
                     contentType: 'application/json',
-                    headers: { "Authorization": "Bearer " + token },
+                    headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
@@ -1220,16 +1233,71 @@ var indexFunctions = {
                     }
                 });
             }
+            else if (uri.indexOf("/user/details") > 0) {
+                if (json.imagePath.length > 0 && json.imagePath.toString().trim().length > 0){
+                    document.getElementById("userBigImg").src = json.imagePath;
+                }
+            }
+
         }
-        else if (uri.indexOf("index") == -1) {
-            window.location.href = "index.html";
-        }
-        else {
+            // else if (uri.indexOf("index") == -1) {
+            //     // window.location.href = "index";
+        // }
+        else if (uri.indexOf("/posts") > 0) {
+            let idParam = "";
+            const id = self.getRequestParam('id');
+            if (id) {
+                idParam = "/" + id;
+            }
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8089/createdPosts' + idParam,
+                contentType: 'application/json',
+
+                success: function (resp) {
+                    if (resp) {
+                        resp.forEach(obj => {
+                            let html = '<div class="post-data">' +
+                                '<div class="post-box" >' +
+                                '<h3>' + obj.category + ' (' + obj.title + ')</h3>' +
+                                '<img src="' + obj.imagePath + '" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">' +
+                                '<p class="post-user">' + obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
+                                '<span class="post-decription">' + obj.descriptionPath + '</span>' +
+                                '</div>' +
+                                '<div class="comment-container">' + self.getCommentList(obj.comments) + '</div>' +
+                                '<div class="input-wrap w-100 p-top-24">' +
+                                '<div class="content m-top-4">' +
+                                '</div>' +
+                                '</div>';
+
+                            $(".post-container").append(html);
+                        });
+                    }
+                }
+            });
+            $(".src-option").append(new Option('', '0'));
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:8089/allCategory',
+                contentType: 'application/json',
+
+                success: function (resp) {
+                    if (resp) {
+                        resp.forEach(obj => {
+                            $(".src-option").append(new Option(obj.postCategoryType, obj.id));
+                        });
+                    }
+                }
+            });
+
+        } else {
             if (uri.indexOf("forgot=true") > -1) {
                 $(".psy-popup[data-popup='forgotpass']").show();
-            }
-            else if (uri.indexOf("token=") > -1) {
+            } else if (uri.indexOf("token=") > -1) {
                 $(".psy-popup[data-popup='changepassword']").show();
+            } else if (uri.indexOf("/admins") > 0 || uri.indexOf("/categories") > 0 ||
+                uri.indexOf("/users") > 0 || uri.indexOf("/postsforapproval") > 0 || uri.indexOf("/myposts") > 0) {
+                window.location.href = "index";
             }
         }
     },
@@ -1238,12 +1306,10 @@ var indexFunctions = {
         if (data) {
             if (!data.verification) {
                 self.logOut();
-            }
-            else {
+            } else {
                 self.logIn(data);
             }
-        }
-        else {
+        } else {
             self.logOut();
         }
     },
@@ -1252,8 +1318,8 @@ var indexFunctions = {
         localStorage.removeItem("userData");
         localStorage.removeItem("username");
         localStorage.removeItem("token");
-        if(isRedirect) {
-            window.location.href = "index.html";
+        if (isRedirect) {
+            window.location.href = "index";
         }
     },
     logIn: function (data) {
@@ -1269,24 +1335,23 @@ var indexFunctions = {
             $(".mnUsers").addClass("hide");
             $(".mnPosts-for-approval").addClass("hide");
             $(".mnMy-posts").removeClass("hide");
-            $(".mnPosts").removeClass("hide");
-        }
-        else if (data.role == 1) {
+
+        } else if (data.role == 1) {
             $(".categories").addClass("hide");
             $(".mnAdmins").addClass("hide");
             $(".mnUsers").removeClass("hide");
             $(".mnPosts-for-approval").removeClass("hide");
             $(".mnMy-posts").removeClass("hide");
-            $(".mnPosts").removeClass("hide");
-        }
-        else if (data.role == 0) {
+
+        } else if (data.role == 0) {
             $(".categories").removeClass("hide");
             $(".mnAdmins").removeClass("hide");
             $(".mnUsers").removeClass("hide");
             $(".mnPosts-for-approval").removeClass("hide");
             $(".mnMy-posts").removeClass("hide");
-            $(".mnPosts").removeClass("hide");
+
         }
+
     },
     shortDateBySymbol: function (date, symbol = ".") {
         var self = this;
@@ -1361,14 +1426,13 @@ var indexFunctions = {
         var self = this;
         if (status != "Created") {
             return "";
-        }
-        else {
+        } else {
             return '<a href="/posts?id=' + postId + '"><img src="/images/arrow_right.png" class="img-nav" alt=""></a>';
         }
     },
-    getFileBase64: function(file) {
+    getFileBase64: function (file) {
         var self = this;
-        if(file) {
+        if (file) {
             const promise = new Promise((resolve, reject) => {
                 var reader = new FileReader();
                 reader.readAsDataURL(file);

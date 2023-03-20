@@ -1,6 +1,7 @@
 package com.example.airforum.model;
 
 import com.example.airforum.enams.Roles;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "users")
+@AllArgsConstructor
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,6 +34,8 @@ public class User implements Serializable {
     @Column(name = "enabled",nullable = false)
     private Boolean enabled = false;
 
+    @Column(name = "user_image_path",nullable = true)
+    private String imagePath;
 
     public User(String firstName, String lastName, String userName, String eMail, String password) {
         this.firstName = firstName;
@@ -107,5 +111,13 @@ public class User implements Serializable {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

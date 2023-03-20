@@ -19,4 +19,6 @@ public class UserResponseDto {
     private String email;
     private Boolean verification;
     private Integer role;
+    private String imagePath;
+    private String message;
 }
