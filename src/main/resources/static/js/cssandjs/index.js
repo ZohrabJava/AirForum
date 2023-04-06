@@ -73,7 +73,10 @@ var indexFunctions = {
                     if (resp) {
                         $(".cat-option").html('');
                         resp.forEach(obj => {
-                            $(".cat-option").append(new Option(obj.postCategoryType, obj.id));
+                            $(".cat-option").append(new Option(
+                                document.documentElement.lang == "hy" ? obj.postCategoryTypeHy :
+                                    document.documentElement.lang == "ru" ? obj.postCategoryTypeRu :
+                                        obj.postCategoryType, obj.id));
                         });
                     }
                 }
@@ -394,17 +397,33 @@ var indexFunctions = {
             form.find("p[class='error']").text("");
 
             let category = form.find("input[name='category']");
+            let categoryHy = form.find("input[name='category_hy']");
+            let categoryRu = form.find("input[name='category_ru']");
             let isValid = true;
 
             const data = {
-                postCategoryType: category.val()
+                postCategoryType: category.val(),
+                postCategoryTypeHy: categoryHy.val(),
+                postCategoryTypeRu: categoryRu.val()
             }
 
             if (data.postCategoryType.length == 0) {
                 category.css("border-color", "red");
                 isValid = false;
-            } else {
+            }else {
                 category.css("border-color", borderColor);
+                            }
+            if (data.postCategoryTypeHy.length == 0){
+                categoryHy.css("border-color", "red");
+                isValid = false;
+            }else {
+                categoryHy.css("border-color", borderColor);
+            }
+            if (data.postCategoryTypeRu.length == 0){
+                categoryRu.css("border-color", "red");
+                isValid = false;
+            } else {
+                categoryRu.css("border-color", borderColor);
             }
 
             if (!isValid) {
@@ -425,11 +444,16 @@ var indexFunctions = {
                             form.find("p[class='error']").text(resp.errorText);
                         } else {
                             $(".psy-popup[data-popup='createcategories']").hide();
+                            let categorys = document.documentElement.lang == "hy" ? resp.postCategoryTypeHy :
+                                document.documentElement.lang == "ru" ? resp.postCategoryTypeRu :
+                                    resp.postCategoryType;
                             let html = '<div class="row" data-id="' + resp.id + '">' +
-                                '<div class="td" style="width:1340px">' + resp.postCategoryType + '</div>' +
+                                '<div class="td" style="width:1340px">' + categorys + '</div>' +
                                 '</div>';
                             $(".row-data").append(html);
                             category.val("");
+                            categoryHy.val("");
+                            categoryRu.val("");
                         }
                     } else {
                         form.find("p[class='error']").text("Something wrong");
@@ -938,8 +962,10 @@ var indexFunctions = {
                                     alert(resp.errorText);
                                 } else {
                                     const html = '<div class="comment-box">' +
-                                        '<p class="comm-user">' + json.firstName + ' ' + json.lastName + ' ' + self.shortDateBySymbol(new Date()) + '</p>' +
-                                        '<div class="comm-cont">' + text + '</div>' +
+                                        '<p class="comm-user" style=" display: flex; align-items: center;">' +
+                                        '<img src="' + json.imagePath + '" alt="" class="user-navbar" style="margin-right: 10px; border-radius: 20px" ' + '">' +
+                                         json.firstName + ' ' + json.lastName + ' ' + self.shortDateBySymbol(new Date()) + '</p>' +
+                                        '<div class="comm-cont" style="margin-top: 10px">' + text + '</div>' +
                                         '</div>';
 
                                     item.closest('.post-data').find('.comment-container').append(html);
@@ -977,12 +1003,17 @@ var indexFunctions = {
                         if (resp) {
                             $(".post-container").html('');
                             resp.forEach(obj => {
+                                let category = document.documentElement.lang == "hy" ? obj.category[1] :
+                                    document.documentElement.lang == "ru" ? obj.category[2] :
+                                        obj.category[0];
                                 let html = '<div class="post-data">' +
                                     '<div class="post-box" >' +
-                                    '<h3>' + obj.category + ' (' + obj.title + ')</h3>' +
+                                    '<h3>' + category + ' (' + obj.title + ')</h3>' +
                                     '<img src="' + obj.imagePath + '" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">' +
-                                    '<p class="post-user">' + obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
-                                    '<span class="post-decription">' + obj.descriptionPath + '</span>' +
+                                    '<p class="post-user"  style=" display: flex; align-items: center;">' +
+                                    '<img src="' + obj.userImg + '" alt="" class="user-navbar" style="margin-right: 10px; border-radius: 20px" ' + (obj.userImg ? null : "hide") + '">' +
+                                    obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
+                                    '<span class="post-decription" style="margin-top: 10px">' + obj.descriptionPath + '</span>' +
                                     '</div>' +
                                     '<div class="comment-container">' + self.getCommentList(obj.comments) + '</div>' +
                                     '<div class="input-wrap w-100 p-top-24">' +
@@ -1020,7 +1051,7 @@ var indexFunctions = {
 
             const json = JSON.parse(userData);
 
-            if (json.imagePath !==null && json.imagePath.toString().trim().length > 0){
+            if (json.imagePath !== null && json.imagePath.toString().trim().length > 0) {
                 document.getElementById("userImg").src = json.imagePath;
             }
 
@@ -1032,7 +1063,6 @@ var indexFunctions = {
                 } else {
                     $(".remove-admin-user").addClass("hide");
                 }
-
 
 
                 $.ajax({
@@ -1055,8 +1085,7 @@ var indexFunctions = {
                         }
                     }
                 });
-            }
-            else if (uri.indexOf("users") > 0) {
+            } else if (uri.indexOf("users") > 0) {
                 // $(".psy-footer").css("position", "absolute");
                 // $(".psy-footer").css("bottom", "0");
                 if (json.role == 2) {
@@ -1064,7 +1093,6 @@ var indexFunctions = {
                 } else if (json.role == 0 || json.role == 1) {
                     $(".add-admin-user").removeClass("hide");
                 }
-
 
 
                 $.ajax({
@@ -1087,12 +1115,10 @@ var indexFunctions = {
                         }
                     }
                 });
-            }
-            else if (uri.indexOf("/postsforapproval") > 0) {
+            } else if (uri.indexOf("/postsforapproval") > 0) {
                 $(".th").css("width", "450px");
                 // $(".psy-footer").css("position", "absolute");
                 // $(".psy-footer").css("bottom", "0");
-
 
 
                 if (json.role == 2) {
@@ -1107,8 +1133,11 @@ var indexFunctions = {
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
+                                let category = document.documentElement.lang == "hy" ? obj.category[1] :
+                                    document.documentElement.lang == "ru" ? obj.category[2] :
+                                        obj.category[0];
                                 let html = '<div class="row" data-id="' + obj.postId + '">' +
-                                    '<div class="td ds-cat" style="width:450px;">' + obj.category + '</div>' +
+                                    '<div class="td ds-cat" style="width:450px;">' + category + '</div>' +
                                     '<div class="td ds-title" style="width:450px;">' + obj.title + '</div>' +
                                     '<div class="td" style="width:450px;">' + self.getDateByFormat(obj.localDateTime, ".") + '</div>' +
                                     '<input type="hidden" class="pst-desc" value="' + obj.descriptionPath + '" />' +
@@ -1119,13 +1148,11 @@ var indexFunctions = {
                         }
                     }
                 });
-            }
-            else if (uri.indexOf("/myposts") > 0) {
+            } else if (uri.indexOf("/myposts") > 0) {
                 $(".th").css("width", "335px");
                 $(".navigation").css("width", "30px");
                 // $(".psy-footer").css("position", "absolute");
                 // $(".psy-footer").css("bottom", "0");
-
 
 
                 $.ajax({
@@ -1136,8 +1163,11 @@ var indexFunctions = {
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
+                                let category = document.documentElement.lang == "hy" ? obj.category[1] :
+                                    document.documentElement.lang == "ru" ? obj.category[2] :
+                                        obj.category[0];
                                 let html = '<div class="row" data-id="' + obj.postId + '">' +
-                                    '<div class="td ds-cat" style="width:335px;">' + obj.category + '</div>' +
+                                    '<div class="td ds-cat" style="width:335px;">' + category + '</div>' +
                                     '<div class="td ds-title" style="width:335px;">' + obj.title + '</div>' +
                                     '<div class="td" style="width:335px;">' + self.getDateByFormat(obj.localDateTime, ".") + '</div>' +
                                     '<div class="td ds-status" style="width:335px;">' + obj.status + '</div>' +
@@ -1151,8 +1181,7 @@ var indexFunctions = {
                         }
                     }
                 });
-            }
-            else if (uri.indexOf("/posts") > 0) {
+            } else if (uri.indexOf("/posts") > 0) {
                 const token = localStorage.getItem("token");
                 let idParam = "";
                 const id = self.getRequestParam('id');
@@ -1169,12 +1198,23 @@ var indexFunctions = {
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
+                                let category = document.documentElement.lang == "hy" ? obj.category[1] :
+                                    document.documentElement.lang == "ru" ? obj.category[2] :
+                                        obj.category[0];
+                                let icon = id ? '':'<div class="navigation" style="width:30px;">' +
+                                    '<a href="/posts?id=' + obj.postId + '"><img src="/images/arrow_right.png" className="img-nav" alt=""></a>' +
+                                    '</div>';
                                 let html = '<div class="post-data">' +
                                     '<div class="post-box" >' +
-                                    '<h3>' + obj.category + ' (' + obj.title + ')</h3>' +
+                                    '<div style="display: flex; justify-content: space-between;">'+
+                                    '<h3>' + category + ' (' + obj.title + ')' + '</h3>' +
+                                     icon +
+                                    '</div>'+
+                                    '<p class="post-user"  style=" display: flex; align-items: center;">' +
+                                    '<img src="' + obj.userImg + '" alt="" class="user-navbar" style="margin-right: 10px; border-radius: 20px" ' + (obj.userImg ? null : "hide") + '">' +
+                                    obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
                                     '<img src="' + obj.imagePath + '" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">' +
-                                    '<p class="post-user">' + obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
-                                    '<span class="post-decription">' + obj.descriptionPath + '</span>' +
+                                    '<span class="post-decription" style="margin-top: 10px">' + obj.descriptionPath + '</span>' +
                                     '</div>' +
                                     '<div class="comment-container">' + self.getCommentList(obj.comments) + '</div>' +
                                     '<div class="input-wrap w-100 p-top-24">' +
@@ -1198,14 +1238,16 @@ var indexFunctions = {
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
-                                $(".src-option").append(new Option(obj.postCategoryType, obj.id));
+                                $(".src-option").append(new Option(
+                                    document.documentElement.lang == "hy" ? obj.postCategoryTypeHy :
+                                    document.documentElement.lang == "ru" ? obj.postCategoryTypeRu :
+                                        obj.postCategoryType, obj.id));
                             });
                         }
                     }
                 });
 
-            }
-            else if (uri.indexOf("/categories") > 0) {
+            } else if (uri.indexOf("/categories") > 0) {
                 $(".th").css("width", "1340px");
                 // $(".psy-footer").css("position", "absolute");
                 // $(".psy-footer").css("bottom", "0");
@@ -1213,7 +1255,6 @@ var indexFunctions = {
                 if (json.role != 0) {
                     window.location.href = "index";
                 }
-
 
 
                 $.ajax({
@@ -1224,17 +1265,21 @@ var indexFunctions = {
                     success: function (resp) {
                         if (resp) {
                             resp.forEach(obj => {
+                                let category = document.documentElement.lang == "hy" ? obj.postCategoryTypeHy :
+                                    document.documentElement.lang == "ru" ? obj.postCategoryTypeRu :
+                                        obj.postCategoryType;
                                 let html = '<div class="row" data-id="' + obj.id + '">' +
-                                    '<div class="td" style="width:1340px">' + obj.postCategoryType + '</div>' +
+                                    '<div class="td" style="width:1340px">' +
+                                    category +
+                                    '</div>' +
                                     '</div>';
                                 $(".row-data").append(html);
                             });
                         }
                     }
                 });
-            }
-            else if (uri.indexOf("/user/details") > 0) {
-                if (json.imagePath.length > 0 && json.imagePath.toString().trim().length > 0){
+            } else if (uri.indexOf("/user/details") > 0) {
+                if (json.imagePath !== null && json.imagePath.length > 0 && json.imagePath.toString().trim().length > 0) {
                     document.getElementById("userBigImg").src = json.imagePath;
                 }
             }
@@ -1257,13 +1302,23 @@ var indexFunctions = {
                 success: function (resp) {
                     if (resp) {
                         resp.forEach(obj => {
+                            let category = document.documentElement.lang == "hy" ? obj.category[1] :
+                                document.documentElement.lang == "ru" ? obj.category[2] :
+                                    obj.category[0];
+                            let icon = id ? '':'<div class="navigation" style="width:30px;">' +
+                                '<a href="/posts?id=' + obj.postId + '"><img src="/images/arrow_right.png" className="img-nav" alt=""></a>' +
+                                '</div>';
                             let html = '<div class="post-data">' +
                                 '<div class="post-box" >' +
-                                '<h3>' + obj.category + ' (' + obj.title + ')</h3>' +
+                                '<div style="display: flex; justify-content: space-between;">'+
+                                '<h3>' + category + ' (' + obj.title + ')' + '</h3>' +
+                                 icon +
+                                '</div>'+
+                                '<p class="post-user"  style=" display: flex; align-items: center;">' +
+                                '<img src="' + obj.userImg + '" alt="" class="user-navbar" style="margin-right: 10px; border-radius: 20px" ' + (obj.userImg ? null : "hide") + '">' +
+                                obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
                                 '<img src="' + obj.imagePath + '" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">' +
-                                '<p class="post-user">' + obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
-                                '<span class="post-decription">' + obj.descriptionPath + '</span>' +
-                                '</div>' +
+                                '<span class="post-decription" style="margin-top: 10px">' + obj.descriptionPath + '</span>' +
                                 '<div class="comment-container">' + self.getCommentList(obj.comments) + '</div>' +
                                 '<div class="input-wrap w-100 p-top-24">' +
                                 '<div class="content m-top-4">' +
@@ -1284,7 +1339,10 @@ var indexFunctions = {
                 success: function (resp) {
                     if (resp) {
                         resp.forEach(obj => {
-                            $(".src-option").append(new Option(obj.postCategoryType, obj.id));
+                            $(".src-option").append(new Option(
+                                document.documentElement.lang == "hy" ? obj.postCategoryTypeHy :
+                                document.documentElement.lang == "ru" ? obj.postCategoryTypeRu :
+                                    obj.postCategoryType, obj.id));
                         });
                     }
                 }
@@ -1407,14 +1465,21 @@ var indexFunctions = {
     },
     getCommentList: function (data) {
         var self = this;
-
         let html = '';
-        data.forEach(obj => {
+        for (const obj of data) {
             html += '<div class="comment-box">' +
-                '<p class="comm-user">' + obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
-                '<div class="comm-cont">' + obj.comment + '</div>' +
+                '<p class="comm-user" style=" display: flex; align-items: center;">' +
+                '<img src="' + obj.userImg + '" alt="" class="user-navbar" style="margin-right: 10px; border-radius: 20px" ' + (obj.userImg ? null : "hide") + '">' +
+                obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
+                '<div class="comm-cont" style="margin-top: 10px;">' + obj.comment + '</div>' +
                 '</div>';
-        });
+            if (!document.documentURI.toString().includes("id")){
+                $(".src-block").removeClass("hide");
+                return html;
+            }else {
+                $(".src-block").addClass("hide");
+            }
+        }
         return html;
     },
     getRequestParam: function (name) {
@@ -1424,7 +1489,7 @@ var indexFunctions = {
     },
     getCursoreImage: function (status, postId) {
         var self = this;
-        if (status != "Created") {
+        if (status == "Waiting" || status == "Blocked" ) {
             return "";
         } else {
             return '<a href="/posts?id=' + postId + '"><img src="/images/arrow_right.png" class="img-nav" alt=""></a>';

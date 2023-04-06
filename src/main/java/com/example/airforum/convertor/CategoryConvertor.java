@@ -9,11 +9,19 @@ import org.springframework.stereotype.Component;
 public class CategoryConvertor {
 
     public Category convert(CategoryRequestDto categoryRequestDto){
-        return new Category(categoryRequestDto.getPostCategoryType());
+        Category category = new Category();
+        category.setPostCategory(categoryRequestDto.getPostCategoryType());
+        category.setPostCategoryHy(categoryRequestDto.getPostCategoryTypeHy());
+        category.setPostCategoryRu(categoryRequestDto.getPostCategoryTypeRu());
+        return category;
     }
 
     public CategoryResponseDto convert(Category category){
-        return new CategoryResponseDto(category.getId(),
-                category.getPostCategory(),null);
+        CategoryResponseDto dto = new CategoryResponseDto();
+        dto.setId(category.getId());
+        dto.setPostCategoryType(category.getPostCategory());
+        dto.setPostCategoryTypeHy(category.getPostCategoryHy());
+        dto.setPostCategoryTypeRu(category.getPostCategoryRu());
+        return dto;
     }
 }

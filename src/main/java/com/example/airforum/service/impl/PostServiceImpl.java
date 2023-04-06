@@ -112,7 +112,7 @@ public class PostServiceImpl {
                 postResponseDto.add(postConvertor.convertor(post));
             }
         }
-        postResponseDto.removeIf(responseDto -> categoryRepository.getCategoryByPostCategory(responseDto.getCategory()) != category);
+        postResponseDto.removeIf(responseDto -> categoryRepository.getCategoryByPostCategory(responseDto.getCategory().get(0)) != category);
         return postResponseDto;
 
     }

@@ -26,10 +26,14 @@ public class CategoryServiceImpl implements CategoryService {
 
     public CategoryResponseDto createCategory(CategoryRequestDto categoryRequestDto) {
         Category category;
-        CategoryResponseDto categoryResponseDto = null;
-        if (categoryRepository.getCategoryByPostCategory(categoryRequestDto.getPostCategoryType()) == null) {
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
+        if (categoryRepository.getCategoryByPostCategory(categoryRequestDto.getPostCategoryType()) == null
+                && categoryRepository.getCategoryByPostCategoryHy(categoryRequestDto.getPostCategoryTypeHy()) == null
+                && categoryRepository.getCategoryByPostCategoryRu(categoryRequestDto.getPostCategoryTypeRu()) == null
+        ) {
 
             category = categoryConvertor.convert(categoryRequestDto);
+
             categoryRepository.save(category);
             category=categoryRepository.getCategoryByPostCategory(categoryRequestDto.getPostCategoryType());
             categoryResponseDto = categoryConvertor.convert(category);

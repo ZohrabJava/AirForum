@@ -20,20 +20,24 @@ public class PostCommentConvertor {
 
     public final PostRepository postRepository;
     public final UserRepository userRepository;
-    public PostComment convertor(PostCommentRequestDto postCommentRequestDto){
-        PostComment postComment=new PostComment();
+
+    public PostComment convertor(PostCommentRequestDto postCommentRequestDto) {
+        PostComment postComment = new PostComment();
         postComment.setPost(postRepository.getPostById(postCommentRequestDto.getPostId()));
         postComment.setUser(userRepository.getUserById(postCommentRequestDto.getUserId()));
-
-        postComment.setDescription( Path.savePath(postCommentRequestDto.getComment(),
-                userRepository.getUserById(postCommentRequestDto.getUserId())));
+        postComment.setDescription(postCommentRequestDto.getComment());
         postComment.setCommentDate(LocalDateTime.now());
+
         return postComment;
     }
-    public PostCommentResponseDto convertor(PostComment postComment){
-        return new PostCommentResponseDto(postComment.getUser().getFirstName(),
-                postComment.getUser().getLastName(),
-                Path.readPath(postComment.getDescription()) ,
-                postComment.getCommentDate());
+
+    public PostCommentResponseDto convertor(PostComment postComment) {
+        PostCommentResponseDto dto = new PostCommentResponseDto();
+        dto.setFirstName(postComment.getUser().getFirstName());
+        dto.setLastName(postComment.getUser().getLastName());
+        dto.setComment(postComment.getDescription());
+        dto.setLocalDateTime(postComment.getCommentDate());
+        dto.setUserImg(postComment.getUser().getImagePath() == null ?  Path.readPath("src\\main\\resources\\static\\profile\\userJpg") : Path.readPath(postComment.getUser().getImagePath()));
+        return dto;
     }
 }

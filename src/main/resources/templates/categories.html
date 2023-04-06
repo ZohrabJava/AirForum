@@ -111,8 +111,8 @@
     <div class="popup-content">
         <div class="popup-head">
             <span class="empty-column"></span>
-            <div class="no-auth-page-section-right-box">
-                <img th:src="@{/images/logo.png}" alt="">
+            <div >
+                <img th:src="@{/images/logo.png}" alt="" style="width: 150px; height: 65px;">
             </div>
             <div class="psy-popup-close-btn icon" data-popup-name="createcategories">
                 <img th:src="@{/images/close.svg}" class="close-popup-icon" alt="Close">
@@ -124,6 +124,14 @@
                 <label class="title" th:text="#{categories.input_category}"></label>
                 <div class="content m-top-4">
                     <input type="text" th:placeholder="#{categories.category}" name="category" autocomplete="off">
+                </div>
+                <label class="title" th:text="#{categories.input_category_hy}" style="margin-top: 10px"></label>
+                <div class="content m-top-4">
+                    <input type="text" th:placeholder="#{categories.category}" name="category_hy" autocomplete="off">
+                </div>
+                <label class="title" th:text="#{categories.input_category_ru}"  style="margin-top: 10px"></label>
+                <div class="content m-top-4">
+                    <input type="text" th:placeholder="#{categories.category}" name="category_ru" autocomplete="off">
                 </div>
             </div>
             <p class="error"></p>

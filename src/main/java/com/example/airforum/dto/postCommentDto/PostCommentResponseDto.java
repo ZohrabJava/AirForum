@@ -14,4 +14,5 @@ public class PostCommentResponseDto {
     private String lastName;
     private String comment;
     private LocalDateTime localDateTime;
+    private String userImg;
 }

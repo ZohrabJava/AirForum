@@ -10,4 +10,7 @@ import lombok.*;
 @EqualsAndHashCode
 public class CategoryRequestDto {
     private String postCategoryType;
+    private String postCategoryTypeHy;
+    private String postCategoryTypeRu;
+
 }

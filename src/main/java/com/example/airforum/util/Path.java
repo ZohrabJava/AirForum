@@ -50,6 +50,20 @@ public class Path {
 
         return path;
     }
+    public static String updateImage(String path,String image) {
+        PrintWriter writer = null;
+        try {
+            writer = new PrintWriter(path);
+            writer.print(image);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } finally {
+            assert writer != null;
+            writer.close();
+        }
+
+        return path;
+    }
 
 
     public static String readPath(String path) {

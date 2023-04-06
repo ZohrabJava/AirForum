@@ -41,19 +41,20 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     private final ConfirmationTokenService confirmationTokenService;
+
     @Override
     public UserUpdateResponseDto creatUser(UserRequestDto request) {
 
-        UserUpdateResponseDto userUpdateResponseDto=new UserUpdateResponseDto();
-        if(userRepository.getUserByEmail(request.getEmail())!=null){
-              userUpdateResponseDto.setErrorText("Wrong mail");
+        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
+        if (userRepository.getUserByEmail(request.getEmail()) != null) {
+            userUpdateResponseDto.setErrorText("Wrong mail");
             return userUpdateResponseDto;
         }
-        if(userRepository.getUserByUserName(request.getUserName())!=null){
-              userUpdateResponseDto.setErrorText("Wrong user name");
-              return userUpdateResponseDto;
+        if (userRepository.getUserByUserName(request.getUserName()) != null) {
+            userUpdateResponseDto.setErrorText("Wrong user name");
+            return userUpdateResponseDto;
         }
-        if (RegisterValidator.isValidForm(request)!=null){
+        if (RegisterValidator.isValidForm(request) != null) {
             return RegisterValidator.isValidForm(request);
         }
 
@@ -82,11 +83,12 @@ public class UserServiceImpl implements UserService {
 
         return userUpdateResponseDto;
     }
+
     @Override
     public UserUpdateResponseDto resetPassword(String email) {
-        UserUpdateResponseDto userUpdateResponseDto=new UserUpdateResponseDto();
-        User user= userRepository.getUserByEmail(email);
-        if(user==null){
+        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
+        User user = userRepository.getUserByEmail(email);
+        if (user == null) {
             userUpdateResponseDto.setErrorText("Wrong email");
             return userUpdateResponseDto;
         }
@@ -99,18 +101,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserUpdateResponseDto updateUserPassword(String token, String password) {
-        UserUpdateResponseDto userUpdateResponseDto =new UserUpdateResponseDto();
-        if(token==null || password==null){
+        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
+        if (token == null || password == null) {
             userUpdateResponseDto.setErrorText("Bad request");
             return userUpdateResponseDto;
         }
-        ConfirmationToken confirmationToken=confirmationTokenService.findConfirmationTokenByToken(token);
-        if(confirmationToken==null){
+        ConfirmationToken confirmationToken = confirmationTokenService.findConfirmationTokenByToken(token);
+        if (confirmationToken == null) {
             userUpdateResponseDto.setErrorText("User not found");
             return userUpdateResponseDto;
         }
-        User user =confirmationToken.getUser();
-        if(user==null){
+        User user = confirmationToken.getUser();
+        if (user == null) {
             userUpdateResponseDto.setErrorText("User not found");
             return userUpdateResponseDto;
         }
@@ -120,7 +122,7 @@ public class UserServiceImpl implements UserService {
 
         user.setPassword(encodedPassword);
         userRepository.save(user);
-        return  userUpdateResponseDto;
+        return userUpdateResponseDto;
     }
 
     @Override
@@ -129,6 +131,7 @@ public class UserServiceImpl implements UserService {
         return userConvertor.toUserDto(user.get());
 
     }
+
     public User getByName(String userName) {
 
         return userRepository.findByUserName(userName).get();
@@ -137,9 +140,10 @@ public class UserServiceImpl implements UserService {
 
 
     public User usergetById(Long id) {
-       return userRepository.getUserById(id);
+        return userRepository.getUserById(id);
 
     }
+
     @Override
     public UserResponseDto getById(Long id) {
         User user = userRepository.getUserById(id);
@@ -148,8 +152,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getAllUsers() {
-        List<User> users=userRepository.getAllByRoles(Roles.USER);
-        List<UserResponseDto> userResponseDto=new ArrayList<>();
+        List<User> users = userRepository.getAllByRoles(Roles.USER);
+        List<UserResponseDto> userResponseDto = new ArrayList<>();
         for (User user : users) {
             userResponseDto.add(userConvertor.toUserDto(user));
         }
@@ -158,8 +162,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserResponseDto> getAllAdmins() {
-        List<User> users=userRepository.getAllByRoles(Roles.ADMIN);
-        List<UserResponseDto> userResponseDto=new ArrayList<>();
+        List<User> users = userRepository.getAllByRoles(Roles.ADMIN);
+        List<UserResponseDto> userResponseDto = new ArrayList<>();
         for (User user : users) {
             userResponseDto.add(userConvertor.toUserDto(user));
         }
@@ -168,71 +172,70 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserUpdateResponseDto updateUser(UserUpdateRequestDto userUpdateRequestDto) {
-        UserUpdateResponseDto userUpdateResponseDto=new UserUpdateResponseDto();
-        if(getByName(userUpdateRequestDto.getUserName())==null){
+        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
+        if (getByName(userUpdateRequestDto.getUserName()) == null) {
             userUpdateResponseDto.setErrorText("Super User or Admin  not found");
             return userUpdateResponseDto;
         }
-        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.SuperAdmin &&
-                getByName(userUpdateRequestDto.getUserName()).getId().equals(userUpdateRequestDto.getId())){
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles() == Roles.SuperAdmin &&
+                getByName(userUpdateRequestDto.getUserName()).getId().equals(userUpdateRequestDto.getId())) {
             userUpdateResponseDto.setErrorText("Super User cant block him");
             return userUpdateResponseDto;
         }
-        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.ADMIN &&
-                getByName(userUpdateRequestDto.getUserName()).getId().equals(userUpdateRequestDto.getId())){
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles() == Roles.ADMIN &&
+                getByName(userUpdateRequestDto.getUserName()).getId().equals(userUpdateRequestDto.getId())) {
             userUpdateResponseDto.setErrorText("Admin cant block him");
             return userUpdateResponseDto;
         }
-        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.USER ){
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles() == Roles.USER) {
             userUpdateResponseDto.setErrorText("User cant block ");
             return userUpdateResponseDto;
         }
-        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.ADMIN &&
-                getByName(getById( userUpdateRequestDto.getId()).getUserName()).getRoles()==Roles.ADMIN){
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles() == Roles.ADMIN &&
+                getByName(getById(userUpdateRequestDto.getId()).getUserName()).getRoles() == Roles.ADMIN) {
             userUpdateResponseDto.setErrorText("Admin cant block another Admin");
             return userUpdateResponseDto;
         }
-        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.ADMIN &&
-                getByName(getById( userUpdateRequestDto.getId()).getUserName()).getRoles()==Roles.SuperAdmin){
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles() == Roles.ADMIN &&
+                getByName(getById(userUpdateRequestDto.getId()).getUserName()).getRoles() == Roles.SuperAdmin) {
             userUpdateResponseDto.setErrorText("Admin cant block Super Admin");
             return userUpdateResponseDto;
         }
 
-           User user= getByName(getById(userUpdateRequestDto.getId()).getUserName());
-           user.setEnabled(userUpdateRequestDto.getStatus());
-           userRepository.save(user);
-           return userUpdateResponseDto;
+        User user = getByName(getById(userUpdateRequestDto.getId()).getUserName());
+        user.setEnabled(userUpdateRequestDto.getStatus());
+        userRepository.save(user);
+        return userUpdateResponseDto;
 
     }
 
     @Override
     public UserUpdateResponseDto changeRole(UserUpdateRequestDto userUpdateRequestDto) {
-        UserUpdateResponseDto userUpdateResponseDto=new UserUpdateResponseDto();
-        if(getByName(userUpdateRequestDto.getUserName())==null){
+        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
+        if (getByName(userUpdateRequestDto.getUserName()) == null) {
             userUpdateResponseDto.setErrorText("Super User  not found");
             return userUpdateResponseDto;
         }
-        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.SuperAdmin &&
-                getByName(userUpdateRequestDto.getUserName()).getId().equals(userUpdateRequestDto.getId())){
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles() == Roles.SuperAdmin &&
+                getByName(userUpdateRequestDto.getUserName()).getId().equals(userUpdateRequestDto.getId())) {
             userUpdateResponseDto.setErrorText("Super User cant remove him");
             return userUpdateResponseDto;
         }
-        if (getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.USER ||
-                getByName(userUpdateRequestDto.getUserName()).getRoles()== Roles.ADMIN ){
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles() == Roles.USER ||
+                getByName(userUpdateRequestDto.getUserName()).getRoles() == Roles.ADMIN) {
             userUpdateResponseDto.setErrorText("User or Admin  cant remove ");
             return userUpdateResponseDto;
         }
-        if( getByName(userUpdateRequestDto.getUserName()).getRoles()==Roles.USER){
+        if (getByName(userUpdateRequestDto.getUserName()).getRoles() == Roles.USER) {
             userUpdateResponseDto.setErrorText("Already User");
             return userUpdateResponseDto;
         }
 
-        User user= getByName(getById(userUpdateRequestDto.getId()).getUserName());
+        User user = getByName(getById(userUpdateRequestDto.getId()).getUserName());
         user.setRoles(userUpdateRequestDto.getRoles());
         userRepository.save(user);
         return userUpdateResponseDto;
     }
-
 
 
     public String signUpUser(User user) {
@@ -339,6 +342,7 @@ public class UserServiceImpl implements UserService {
                 "\n" +
                 "</div></div>";
     }
+
     public String buildEmail(String name, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
@@ -407,6 +411,7 @@ public class UserServiceImpl implements UserService {
                 "\n" +
                 "</div></div>";
     }
+
     @Transactional
     public String confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService
@@ -421,7 +426,7 @@ public class UserServiceImpl implements UserService {
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            User user=confirmationToken.getUser();
+            User user = confirmationToken.getUser();
             confirmationTokenRepository.delete(confirmationToken);
             userRepository.delete(user);
             return "expired";
@@ -440,12 +445,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto updateUserPicture(UserRequestDto userRequestDto) {
         UserResponseDto dto = new UserResponseDto();
-        String imageDataString = userRequestDto.getImagePath();
-//        if (imageDataString.split(","))//Todo validation
-        String path = Path.savePath(imageDataString,userRequestDto.getUserName());
+        User user = getByName(userRequestDto.getUserName());
 
-        User user= getByName(userRequestDto.getUserName());
-        user.setImagePath(path);
+        String imageDataString = userRequestDto.getImagePath();
+        if (user.getImagePath() == null) {
+            String path = Path.savePath(imageDataString, userRequestDto.getUserName());
+            user.setImagePath(path);
+        } else {
+            String path = Path.updateImage(user.getImagePath(), imageDataString);
+            user.setImagePath(path);
+        }
+//        if (imageDataString.split(","))//Todo validation
+
+
         userRepository.save(user);
         dto = userConvertor.toUserDto(user);
         return dto;

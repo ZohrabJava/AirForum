@@ -11,5 +11,7 @@ import lombok.*;
 public class CategoryResponseDto {
     private Long id;
     private String postCategoryType;
+    private String postCategoryTypeHy;
+    private String postCategoryTypeRu;
     private String errorText;
 }

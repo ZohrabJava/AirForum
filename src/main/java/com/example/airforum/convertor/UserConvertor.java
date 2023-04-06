@@ -17,7 +17,7 @@ public class UserConvertor {
         userResponseDto.setEmail(user.getEmail());
         userResponseDto.setVerification(user.getEnabled());
         userResponseDto.setRole(user.getRoles().ordinal());
-        userResponseDto.setImagePath(user.getImagePath() == null ? null : Path.readPath(user.getImagePath()));
+        userResponseDto.setImagePath(user.getImagePath() == null ?  Path.readPath("src\\main\\resources\\static\\profile\\userJpg") : Path.readPath(user.getImagePath()));
         return userResponseDto;
     }
 

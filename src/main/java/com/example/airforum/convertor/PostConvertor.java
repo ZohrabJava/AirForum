@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -34,37 +35,37 @@ public class PostConvertor {
     public Post convertor(PostRequestDto postRequestDto) {
         Post post = new Post(userRepository.getUserByUserName(postRequestDto.getUserName()),
                 postRequestDto.getTitle(),
-                Path.savePath(postRequestDto.getDescriptionPath(),
-                        userRepository.getUserByUserName(postRequestDto.getUserName())),
+                postRequestDto.getDescriptionPath(),
                 Path.savePath(postRequestDto.getImagePath(),
                         userRepository.getUserByUserName(postRequestDto.getUserName())),
                 PostState.Waiting,
                 AnswerState.NOT_ANSWERED,
                 LocalDateTime.now(),
-                0.0,
-                0L,
                 categoryRepository.getCategoryById(postRequestDto.getCategoryId()));
-        System.out.println(post);
         return post;
     }
 
     public PostResponseDto convertor(Post post) {
-        PostResponseDto postResponseDto = new PostResponseDto(
-                post.getId(),
-                post.getTitle(),
-                Path.readPath(post.getDescriptionPath()),
-                Path.readPath(post.getImagePath()),
-                post.getCategory().getPostCategory(),
-                post.getLocalDateTime(),post.getPostState().toString());
-        postResponseDto.setFirstName(post.getUser().getFirstName());
-        postResponseDto.setLastName(post.getUser().getLastName());
-        postResponseDto.setComments(getCommentsByPostId(post.getId()));
-        System.out.println(postResponseDto);
-        return postResponseDto;
+        PostResponseDto dto = new PostResponseDto();
+        dto.setCategory(Arrays.asList(post.getCategory().getPostCategory(),post.getCategory().getPostCategoryHy(),post.getCategory().getPostCategoryRu()));
+        dto.setPostId(post.getId());
+        dto.setTitle(post.getTitle());
+        dto.setDescriptionPath(post.getDescriptionPath());
+        dto.setImagePath(Path.readPath(post.getImagePath()));
+        dto.setLocalDateTime(post.getLocalDateTime());
+        dto.setStatus(post.getPostState().toString());
+        dto.setFirstName(post.getUser().getFirstName());
+        dto.setLastName(post.getUser().getLastName());
+        dto.setComments(getCommentsByPostId(post.getId()));
+        dto.setUserImg(post.getUser().getImagePath() == null ?  Path.readPath("src\\main\\resources\\static\\profile\\userJpg") : Path.readPath(post.getUser().getImagePath()));
+
+
+        return dto;
     }
+
     public List<PostCommentResponseDto> getCommentsByPostId(Long id) {
         List<PostComment> postComments = postCommentRepository.getPostCommentByPostId(id);
-        List<PostCommentResponseDto> postCommentResponseDto=new ArrayList<>();
+        List<PostCommentResponseDto> postCommentResponseDto = new ArrayList<>();
         for (PostComment postComment : postComments) {
             postCommentResponseDto.add(postCommentConvertor.convertor(postComment));
         }

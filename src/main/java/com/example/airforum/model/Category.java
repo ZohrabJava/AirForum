@@ -17,6 +17,10 @@ public class Category implements Serializable {
 
     @Column(name = "post_category", nullable = false, unique = true)
     private String postCategory;
+    @Column(name = "post_category_hy", nullable = false, unique = true)
+    private String postCategoryHy;
+    @Column(name = "post_category_ru", nullable = false, unique = true)
+    private String postCategoryRu;
 
     public Category( String postCategory) {
         this.postCategory = postCategory;
@@ -40,5 +44,21 @@ public class Category implements Serializable {
 
     public void setPostCategory(String postCategory) {
         this.postCategory = postCategory;
+    }
+
+    public String getPostCategoryHy() {
+        return postCategoryHy;
+    }
+
+    public void setPostCategoryHy(String postCategoryHy) {
+        this.postCategoryHy = postCategoryHy;
+    }
+
+    public String getPostCategoryRu() {
+        return postCategoryRu;
+    }
+
+    public void setPostCategoryRu(String postCategoryRu) {
+        this.postCategoryRu = postCategoryRu;
     }
 }

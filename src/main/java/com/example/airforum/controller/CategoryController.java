@@ -19,7 +19,6 @@ import java.util.List;
 @RequestMapping
 public class CategoryController {
     private final CategoryServiceImpl categoryService;
-    private final CategoryConvertor convertor;
 
     @PostMapping("/category")
     public CategoryResponseDto creatCategory(@RequestBody CategoryRequestDto categoryRequestDto) {

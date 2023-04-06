@@ -54,14 +54,7 @@ public class ThymeleafConfig {
         resolver.setCharacterEncoding("UTF-8");
         return resolver;
     }
-
-//    @Bean
-//    public MultipartResolver multipartResolver() {
-//        CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-//        resolver.setDefaultEncoding("utf-8");
-//        resolver.setMaxUploadSize(1024 * 1024 * 10); // 10 MB
-//        return resolver;
-//    }
+    
 }
 
 

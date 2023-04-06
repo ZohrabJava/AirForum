@@ -17,18 +17,18 @@ public class Post implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id", nullable = false)
     private Long id;
-    @JoinColumn(name = "user_id",nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private User user;
-    @JoinColumn(name = "category_id",nullable = false)
+    @JoinColumn(name = "category_id", nullable = false)
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Category category;
     @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "description_path",nullable = false)
+    @Column(name = "description", nullable = false)
     @Type(type = "text")
     private String descriptionPath;
-    @Column(name = "image_path",nullable = true)
+    @Column(name = "image_path", nullable = true)
     private String imagePath;
     @Enumerated(EnumType.STRING)
     @Column(name = "post_state", nullable = false)
@@ -38,11 +38,6 @@ public class Post implements Serializable {
     private AnswerState answerState;
     @Column(name = "post_date", nullable = false)
     private LocalDateTime localDateTime;
-    @Column(name = "rating", nullable = false)
-    private Double rating;
-    @Column(name = "rating_count", nullable = false)
-    private Long ratingCount;
-
 
     public Post(User user,
                 String title,
@@ -51,8 +46,6 @@ public class Post implements Serializable {
                 PostState postState,
                 AnswerState answerState,
                 LocalDateTime localDateTime,
-                Double rating,
-                Long ratingCount,
                 Category category) {
         this.user = user;
         this.title = title;
@@ -61,8 +54,6 @@ public class Post implements Serializable {
         this.postState = postState;
         this.answerState = answerState;
         this.localDateTime = localDateTime;
-        this.rating = rating;
-        this.ratingCount = ratingCount;
         this.category = category;
     }
 
@@ -134,18 +125,6 @@ public class Post implements Serializable {
         this.localDateTime = localDateTime;
     }
 
-    public Double getRating() {
-        return rating;
-    }
-
-    public void setRating(Double rating) {
-        this.rating = rating;
-    }
-
-    public Long getRatingCount() {
-        return ratingCount;
-    }
-
     public Category getCategory() {
         return category;
     }
@@ -154,7 +133,4 @@ public class Post implements Serializable {
         this.category = category;
     }
 
-    public void setRatingCount(Long ratingCount) {
-        this.ratingCount = ratingCount;
-    }
 }
