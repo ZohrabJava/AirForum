@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @AllArgsConstructor
@@ -37,6 +38,7 @@ public class PostServiceImpl {
         List<PostResponseDto> postResponseDto = new ArrayList<>();
         if (id == null) {
             posts = postRepository.getAllByPostState(postState);
+            Collections.reverse(posts);
             for (Post post : posts) {
                 postResponseDto.add(postConvertor.convertor(post));
             }
@@ -50,6 +52,7 @@ public class PostServiceImpl {
     public List<PostResponseDto> getPostsByUserName(String userName) {
 
         List<Post> posts = postRepository.getPostByUserUserName(userName);
+        Collections.reverse(posts);
         List<PostResponseDto> postResponseDto = new ArrayList<>();
         for (Post post : posts) {
             postResponseDto.add(postConvertor.convertor(post));
@@ -88,6 +91,7 @@ public class PostServiceImpl {
         if (categoryId == 0) {
             if (title != null) {
                 posts = postRepository.getPostByTitleContains(title);
+                Collections.reverse(posts);
                 for (Post post : posts) {
                     if(post.getPostState()==PostState.Created) {
                         postResponseDto.add(postConvertor.convertor(post));
@@ -99,6 +103,7 @@ public class PostServiceImpl {
         }
         if (title == null) {
             posts = postRepository.getAllByPostState(PostState.Created);
+            Collections.reverse(posts);
             for (Post post : posts) {
                 if (post.getCategory() == category) {
                     postResponseDto.add(postConvertor.convertor(post));

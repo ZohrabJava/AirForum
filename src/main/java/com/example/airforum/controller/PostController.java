@@ -6,10 +6,7 @@ import com.example.airforum.dto.postDto.PostUpdateRequestDto;
 import com.example.airforum.dto.postDto.PostUpdateResponseDto;
 import com.example.airforum.enams.PostState;
 import com.example.airforum.service.impl.PostServiceImpl;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

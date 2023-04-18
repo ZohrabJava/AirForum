@@ -61,7 +61,7 @@
                         <ul class="actions-right header-is-auth hide">
                             <li><span class="head-fullname"></span></li>
                             <a class="languages" th:href="@{/user/details(lang=${#locale.language})}">
-                                <img class="user-navbar" th:src="@{/images/user.jpg}" alt="" id = "userImg"/>
+                                <img class="user-navbar" th:src="@{/images/user.jpg}" alt="" id="userImg"/>
                             </a>
                             <li>
                                 <button class="psy-btn primary thick header-logout" data-type="standard">
@@ -92,35 +92,55 @@
             <div class="no-auth-page-section-content" style="align-items: flex-start;">
                 <div class="container-md" style="width: 250px; display: table-caption;">
                     <img id="userBigImg" th:src="@{/images/user.jpg}" alt="" class="user-img"/>
-                    <button id="user-picture-text"  class="psy-btn primary thick" style="margin-top: 10px;width: 250px; justify-content: center; ">
-                        <span class="psy-btn-text" onclick="upload()" > Change user picture</span>
+                    <button id="user-picture-text" class="psy-btn primary thick"
+                            style="margin-top: 10px;width: 250px; justify-content: center; ">
+                        <span class="psy-btn-text" onclick="upload()"> Change user picture</span>
                     </button>
-                    <p class="error"></p>
                     <div class="content m-top-4">
-                        <form id="form-userprofile" autocomplete="off"  method="post" enctype="multipart/form-data" >
-                            <input type="file" placeholder="Image Path" name="imagepath" id="imagepath" autocomplete="off" style="display: none" >
+                        <form id="form-userprofile" autocomplete="off" method="post" enctype="multipart/form-data">
+                            <input type="file" placeholder="Image Path" name="imagepath" id="imagepath"
+                                   autocomplete="off" style="display: none">
                             <button id="submit-img" type="submit" style="display: none">Upload</button>
                         </form>
                         <h1 th:text="${message}"></h1>
                     </div>
 
-                    <div class="input-wrap has-right-i w-100 p-top-16">
-                        <label class="title" th:text="#{user.change_password}"></label>
-                        <label class="title" th:text="#{user.old_password}"></label>
-                        <div class="content m-top-4" style="width: 250px">
-                            <input type="password" placeholder="******************" name="password" autocomplete="off">
+                    <form id="form-changeUserPassword" autocomplete="off" method="post" enctype="multipart/form-data">
+                        <div class="input-wrap has-right-i w-100 p-top-16">
+                            <label class="title" th:text="#{user.change_password}"></label>
+                            <label class="title" th:text="#{user.old_password}"></label>
+                            <div class="content m-top-4" style="width: 250px">
+                                <input type="password" placeholder="******************" name="password"
+                                       autocomplete="off">
+                            </div>
+                            <label class="title" th:text="#{user.new_password}" style="margin-top: 10px;"></label>
+                            <div class="content m-top-4" style="width: 250px">
+                                <input type="password" placeholder="******************" name="confirmpassword"
+                                       autocomplete="off">
+                            </div>
                         </div>
-                        <label class="title" th:text="#{user.new_password}" style="margin-top: 10px;"></label>
-                        <div class="content m-top-4" style="width: 250px">
-                            <input type="password" placeholder="******************" name="password" autocomplete="off">
-                        </div>
-                    </div>
-                    <button class="psy-btn primary thick" style="margin-top: 10px; margin-left: 70%;">
-                        <span class="psy-btn-text" th:text="#{user.change}"></span>
-                    </button>
+                        <p class="error error-message hide" th:text="#{error.message_2}"></p>
+                        <p class="error error-password hide" th:text="#{error.message_password}"></p>
+                        <p class="info hide" th:text="#{info.message_1}"></p>
+                        <button class="psy-btn primary thick" style="margin-top: 10px; margin-left: 70%;">
+                            <span class="psy-btn-text" th:text="#{user.change}"></span>
+                        </button>
+                    </form>
                 </div>
                 <div class="container-md" style="width: 700px;">
-                    <label class="title">Zohrab Hovhannisyan</label>
+                    <label class="title" id="fullName"></label>
+                    <div class="user-content">
+                        <p th:text="#{user.detail_email}"></p>
+                        <p id="email" style="margin-left: 15px"></p>
+                    </div>
+                    <div class="user-content">
+                        <p th:text="#{user.detail_created}"></p>
+                        <p id="post" style="margin-left: 15px"></p>
+                    </div>
+                    <div class="user-content">
+                        <p th:text="#{user.detail_comment}"></p>
+                        <p id="comment" style="margin-left: 15px"></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -161,9 +181,11 @@
             }
         });
     });
-    function upload(){
+
+    function upload() {
         document.getElementById("imagepath").click();
     }
+
     const fileInput = document.getElementById("imagepath");
     fileInput.addEventListener("change", handleFileSelect);
 

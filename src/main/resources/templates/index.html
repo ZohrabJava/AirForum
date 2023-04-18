@@ -62,7 +62,7 @@
                             <li><span class="head-fullname"></span></li>
                             <li>
                                 <a class="languages" th:href="@{/user/details(lang=${#locale.language})}">
-                                    <img class="user-navbar" th:src="@{/images/user.jpg}" alt="" id = "userImg"/>
+                                    <img class="user-navbar" th:src="@{/images/user.jpg}" alt="" id="userImg"/>
                                 </a>
                             </li>
                             <li>
@@ -197,6 +197,7 @@
                                autocomplete="off">
                     </div>
                 </div>
+                <p class="error first-name-error hide" th:text="#{error.message_first_name}" ></p>
                 <div class="input-wrap w-100 p-top-16">
                     <label class="title" th:text="#{register.last_name}"></label>
                     <div class="content m-top-4">
@@ -204,25 +205,37 @@
                                autocomplete="off">
                     </div>
                 </div>
+                <p class="error last-name-error hide" th:text="#{error.message_last_name}" ></p>
                 <div class="input-wrap w-100 p-top-16">
                     <label class="title" th:text="#{register.email}"></label>
                     <div class="content m-top-4">
                         <input type="email" th:placeholder="#{register.email_hint}" name="email" autocomplete="off">
                     </div>
                 </div>
+                <p class="error email-error hide" th:text="#{error.message_email}" ></p>
+                <p class="error email-error-exist hide" th:text="#{error.message_email_exist}" ></p>
                 <div class="input-wrap w-100 p-top-16">
                     <label class="title" th:text="#{login.username}"></label>
                     <div class="content m-top-4">
                         <input type="text" th:placeholder="#{login.username_hint}" name="userName" autocomplete="off">
                     </div>
                 </div>
+                <p class="error username-error hide" th:text="#{error.message_username}" ></p>
+                <p class="error username-error-exist hide" th:text="#{error.message_username_exist}" ></p>
                 <div class="input-wrap w-100 p-top-16">
                     <label class="title" th:text="#{login.password}"></label>
                     <div class="content m-top-4">
                         <input type="password" placeholder="******************" name="password" autocomplete="off">
                     </div>
                 </div>
-                <p class="error"></p>
+                <div class="input-wrap w-100 p-top-16">
+                    <label class="title" th:text="#{login.confirmPassword}"></label>
+                    <div class="content m-top-4">
+                        <input type="password" placeholder="******************" name="confirmPassword" autocomplete="off">
+                    </div>
+                </div>
+                <p class="error password-error hide" th:text="#{error.message_password}" ></p>
+                <p class="errorMessage hide" th:text="#{error.message_1}"></p>
                 <button class="psy-btn psy-btn-loader primary thick w-100" type="submit">
                     <span class="psy-btn-text" th:text="#{index.register}"></span>
                 </button>
@@ -248,51 +261,136 @@
                         <input type="email" th:placeholder="#{register.email_hint}" name="email" autocomplete="off">
                     </div>
                 </div>
-                <p class="error"></p>
+                <p class="error hide" th:text="#{error.message_email_not_found}"></p>
                 <button class="psy-btn psy-btn-loader primary thick w-100" type="submit">
                     <span class="psy-btn-text" th:text="#{index.send}"></span>
                 </button>
             </form>
         </div>
     </div>
-    <div class="psy-popup hide-only-cancel popup-width-424" data-popup="changepassword">
+    <div class="psy-popup hide-only-cancel popup-width-424" data-popup="registerSuccess">
         <div class="popup-content">
             <div class="popup-head">
                 <span class="empty-column"></span>
                 <div>
                     <img th:src="@{/images/logo.png}" alt="" style="width: 150px; height: 65px;">
                 </div>
-                <div class="psy-popup-close-btn icon" data-popup-name="changepassword">
+                <div class="psy-popup-close-btn icon" data-popup-name="forgotpass">
                     <img th:src="@{/images/close.svg}" class="close-popup-icon" alt="Close">
                 </div>
             </div>
-            <p class="psy-popup-title">Change password</p>
-            <form id="form-changepassword" autocomplete="off" action="index" method="post">
-                <div class="input-wrap w-100 p-top-24">
-                    <label class="title">Password *</label>
-                    <div class="content m-top-4">
-                        <input type="password" placeholder="******************" name="password" autocomplete="off">
-                    </div>
-                </div>
-                <div class="input-wrap w-100 p-top-24">
-                    <label class="title">Confirm Password *</label>
-                    <div class="content m-top-4">
-                        <input type="password" placeholder="******************" name="confirmpassword"
-                               autocomplete="off">
-                    </div>
-                </div>
-                <p class="error"></p>
-                <button class="psy-btn psy-btn-loader primary thick w-100" type="submit">
-                    <span class="psy-btn-text">Save</span>
-                </button>
-            </form>
+            <p class="psy-popup-title" th:text="#{info.thank_you}"></p>
+            <p style="font-size: 20px; line-height: 28px; color: #66696d ;text-align: center"
+               th:text="#{info.register}"></p>
         </div>
     </div>
-
+    <div class="psy-popup hide-only-cancel popup-width-424" data-popup="forgotSuccess">
+        <div class="popup-content">
+            <div class="popup-head">
+                <span class="empty-column"></span>
+                <div>
+                    <img th:src="@{/images/logo.png}" alt="" style="width: 150px; height: 65px;">
+                </div>
+                <div class="psy-popup-close-btn icon" data-popup-name="forgotpass">
+                    <img th:src="@{/images/close.svg}" class="close-popup-icon" alt="Close">
+                </div>
+            </div>
+            <p class="psy-popup-title" th:text="#{info.thank_you}"></p>
+            <p style="font-size: 20px; line-height: 28px; color: #66696d ;text-align: center"
+               th:text="#{info.reset}"></p>
+        </div>
+    </div>
+    <div class="psy-popup-info hide-only-cancel popup-width-424" th:if="${changePassword}">
+        <div >
+            <div class="popup-content">
+                <div class="popup-head">
+                    <span class="empty-column"></span>
+                    <div>
+                        <img th:src="@{/images/logo.png}" alt="" style="width: 150px; height: 65px;">
+                    </div>
+                    <div class="psy-popup-close-btn icon" data-popup-name="changepassword">
+                        <a th:href="@{/index(lang=${#locale.language})}">
+                        <img th:src="@{/images/close.svg}" class="close-popup-icon" alt="Close">
+                        </a>
+                    </div>
+                </div>
+                <p class="psy-popup-title" th:text="#{index.change_password}"></p>
+                <form id="form-changepassword" autocomplete="off" action="index" method="post">
+                    <div class="input-wrap w-100 p-top-24">
+                        <label class="title" th:text="#{login.password}"></label>
+                        <div class="content m-top-4">
+                            <input type="password" placeholder="******************" name="password" autocomplete="off">
+                        </div>
+                    </div>
+                    <div class="input-wrap w-100 p-top-24">
+                        <label class="title" th:text="#{login.confirmPassword}"></label>
+                        <div class="content m-top-4">
+                            <input type="password" placeholder="******************" name="confirmpassword"
+                                   autocomplete="off">
+                        </div>
+                    </div>
+                    <p class="error not-matches hide" th:text="#{error.message_1}"></p>
+                    <p class="error not-matches-be hide" th:text="#{error.message_password}"></p>
+                    <button class="psy-btn psy-btn-loader primary thick w-100" type="submit">
+                        <span class="psy-btn-text" th:text="#{index.save}"></span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="psy-popup-info hide-only-cancel popup-width-424" th:if="${showPopup}">
+        <div class="popup-content" style="width:420px;">
+            <div class="popup-head">
+                <span class="empty-column"></span>
+                <div>
+                    <img th:src="@{/images/logo.png}" alt="" style="width: 150px; height: 65px;">
+                </div>
+                <div class="psy-popup-close-btn icon" data-popup-name="succesConfirmation">
+                    <img th:src="@{/images/close.svg}" class="close-popup-icon" alt="Close">
+                </div>
+            </div>
+            <p class="psy-popup-title" th:text="#{confirmation.success_text_1}"></p>
+            <p style="font-size: 20px; line-height: 28px; color: #66696d ;text-align: center"
+               th:text="#{confirmation.success_text_2}"></p>
+            <p style="font-size: 20px; line-height: 28px; color: #66696d ;text-align: center"
+               th:text="#{confirmation.success_text_3}"></p>
+        </div>
+    </div>
+    <div class="psy-popup-info hide-only-cancel popup-width-424" th:if="${infoPopup}">
+        <div class="popup-content" style="width:435px;">
+            <div class="popup-head">
+                <span class="empty-column"></span>
+                <div>
+                    <img th:src="@{/images/logo.png}" alt="" style="width: 150px; height: 65px;">
+                </div>
+                <div class="psy-popup-close-btn icon" data-popup-name="failedConfirmation">
+                    <img th:src="@{/images/close.svg}" class="close-popup-icon" alt="Close">
+                </div>
+            </div>
+            <div th:if="${used}">
+                <p class="psy-popup-title" th:text="#{info.title}"></p>
+                <p style="font-size: 20px; line-height: 28px; color: #66696d ;text-align: center"
+                   th:text="#{info.token_used}"></p>
+            </div>
+            <div th:if="${invalid}">
+                <p class="psy-popup-title" th:text="#{info.title}"></p>
+                <p style="font-size: 20px; line-height: 28px; color: #66696d ;text-align: center"
+                   th:text="#{info.token_invalid}"></p>
+            </div>
+            <div th:if="${expired}">
+                <p class="psy-popup-title" th:text="#{info.title}"></p>
+                <p style="font-size: 20px; line-height: 28px; color: #66696d ;text-align: center"
+                   th:text="#{info.token_expired}"></p>
+            </div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript" th:src="@{/js/cssandjs/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:src="@{/js/cssandjs/index.js}"></script>
-
+<div id="waiting-panel">
+    <div class="spinner"></div>
+    <div class="message" th:text="#{loading}"></div>
+</div>
 <script>
     $(document).ready(function () {
         $("#english").click(function () {

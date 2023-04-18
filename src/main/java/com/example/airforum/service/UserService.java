@@ -20,8 +20,12 @@ public interface UserService {
 
     UserUpdateResponseDto changeRole(UserUpdateRequestDto userUpdateRequestDto);
 
-    UserUpdateResponseDto resetPassword(String email);
+    UserUpdateResponseDto resetPassword(UserUpdateRequestDto user);
 
     UserUpdateResponseDto updateUserPassword(String token, String password);
+    UserUpdateResponseDto changeUserPassword(UserUpdateRequestDto dto);
     UserResponseDto updateUserPicture(UserRequestDto userRequestDto);
+
+    int getPostCount(long userId);
+    int getCommentCount(long userId);
 }

@@ -33,16 +33,49 @@ public class PageController {
     private final UserServiceImpl userService;
 
     @GetMapping("/confirm")
-    public String viewConfirmPage(@RequestParam("token") String token) {
+    public String viewConfirmPage(Model model, @RequestParam("token") String token) {
         String verification = userService.confirmToken(token);
-        if (verification.equals("expired")) {
-            return "emailfaild";
+        if (verification.equals("confirmed")) {
+            model.addAttribute("infoPopup", true);
+            model.addAttribute("used", true);
+            return "index";
+        } else if (verification.equals("notFound")) {
+            model.addAttribute("infoPopup", true);
+            model.addAttribute("invalid", true);
+            return "index";
+        } else if (verification.equals("expired")) {
+            model.addAttribute("infoPopup", true);
+            model.addAttribute("expired", true);
+            return "index";
         }
-        return "emailSuccess";
+        model.addAttribute("showPopup", true);
+        return "index";
     }
 
     @GetMapping("/index")
-    public String viewHome() {
+    public String viewHome(Model model) {
+        return "index";
+    }
+
+    @GetMapping("/reset")
+    public String resetPassword(Model model, @RequestParam("token") String token) {
+        String verification = userService.resetTokenState(token);
+        if (verification.equals("success")) {
+            model.addAttribute("changePassword", true);
+            return "index";
+        } else if (verification.equals("confirmed")) {
+            model.addAttribute("infoPopup", true);
+            model.addAttribute("used", true);
+            return "index";
+        } else if (verification.equals("notFound")) {
+            model.addAttribute("infoPopup", true);
+            model.addAttribute("invalid", true);
+            return "index";
+        } else if (verification.equals("expired")) {
+            model.addAttribute("infoPopup", true);
+            model.addAttribute("expired", true);
+            return "index";
+        }
         return "index";
     }
 

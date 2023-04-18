@@ -288,6 +288,17 @@ img {
     display: none;
     z-index: 999;
 }
+.psy-popup-info {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 30, 40, .3);
+    z-index: 999;
+}
 
 .psy-popup[data-popup=login] .popup-content, .psy-popup[data-popup=popup-join-our-newsletter] .popup-content, .psy-popup[data-popup=register-therapist] .popup-content, .psy-popup[data-popup=register-user] .popup-content {
     padding: 24px 32px 32px;
@@ -476,6 +487,16 @@ img {
     color: red;
 }
 
+.errorMessage {
+    padding-top: 15px;
+    color: red;
+}
+
+.info {
+    padding-top: 15px;
+    color: deepskyblue;
+}
+
 .table {
     display: inline-flex;
     height: 40px;
@@ -583,6 +604,12 @@ img {
     color: #25272c;
     font-size: 12px;
     font-weight: bold;
+}
+
+.user-content {
+    display: flex;
+    font-size: 30px;
+    margin-top: 20px;
 }
 
 .languages {
@@ -747,4 +774,39 @@ img {
     height: 32px;
     width: 126px;
     margin-right: 15px;
+}
+#waiting-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    visibility: hidden;
+}
+
+.spinner {
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spinner 0.8s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.message {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
 }

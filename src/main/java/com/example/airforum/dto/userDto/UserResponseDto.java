@@ -21,4 +21,6 @@ public class UserResponseDto {
     private Integer role;
     private String imagePath;
     private String message;
+    private int postCount;
+    private int commentCount;
 }

@@ -48,8 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/user/register", "/login", "/index","/user/**","/resetPassword",
-                        "/posts","/allCategory","/createdPosts","/createdPosts/{id}","/searchPosts",
+                .antMatchers("/user/register","/creat","/confirm","/reset", "/login", "/index","/user/**","/resetPassword",
+                        "/posts","/allCategory","/createdPosts","/createdPosts/{id}","/searchPosts","/updatePassword",
                         "/js/**","/styles/**","/images/**",
                         "/myposts","/postsforapproval","/users","/admins","/categories").permitAll()
                 .anyRequest().authenticated()

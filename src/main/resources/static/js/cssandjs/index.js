@@ -1,8 +1,10 @@
 ﻿jQuery(document).ready(function () {
     indexFunctions.init();
     indexFunctions.events();
+    console.log(document.documentElement.lang);
 });
-
+var domainName = "localhost";
+// var domainName = "10.5.113.18";
 var borderColor = "#b3bac3";
 var indexFunctions = {
     events: function () {
@@ -15,7 +17,7 @@ var indexFunctions = {
             try {
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8089/userById/' + json.userId,
+                    url: 'http://' + domainName + ':8089/userById/' + json.userId,
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
@@ -66,7 +68,7 @@ var indexFunctions = {
             const token = localStorage.getItem("token");
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8089/allCategory',
+                url: 'http://' + domainName + ':8089/allCategory',
                 contentType: 'application/json',
                 headers: {"Authorization": "Bearer " + token},
                 success: function (resp) {
@@ -99,8 +101,23 @@ var indexFunctions = {
         $(document).on("click", ".psy-popup-close-btn[data-popup-name='forgotpass']", function () {
             window.location.href = "index";
         });
+        $(document).on("click", ".psy-popup-close-btn[data-popup-name='forgotSuccess']", function () {
+            window.location.href = "index";
+        });
 
-        $(document).on("click", ".psy-popup-close-btn[data-popup-name='changepassword']", function () {
+        $(document).on("click", ".psy-popup-close-btn[data-popup-name='registerSuccess']", function () {
+            window.location.href = "index";
+        });
+
+        // $(document).on("click", ".psy-popup-close-btn[data-popup-name='changepassword']", function () {
+        //     window.location.href = "index";
+        // });
+
+        $(document).on("click", ".psy-popup-close-btn[data-popup-name='succesConfirmation']", function () {
+            window.location.href = "index";
+        });
+
+        $(document).on("click", ".psy-popup-close-btn[data-popup-name='failedConfirmation']", function () {
             window.location.href = "index";
         });
 
@@ -113,11 +130,11 @@ var indexFunctions = {
             let isValid = true;
 
             const data = {
-                username: username.val(),
+                userName: username.val(),
                 password: password.val()
             }
 
-            if (data.username.length == 0) {
+            if (data.userName.length == 0) {
                 username.css("border-color", "red");
                 isValid = false;
             } else {
@@ -139,8 +156,8 @@ var indexFunctions = {
             try {
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/login?username=' + data.username + '&password=' + data.password + '',
-                    //data: JSON.stringiy(data),
+                    url: 'http://' + domainName + ':8089/login',
+                    data: JSON.stringify(data),
                     contentType: 'application/json',
                     error: function (xhr) {
                         if (xhr.status == 401) {
@@ -159,7 +176,7 @@ var indexFunctions = {
                             try {
                                 $.ajax({
                                     type: 'GET',
-                                    url: 'http://localhost:8089/user/' + resp.userName,
+                                    url: 'http://' + domainName + ':8089/user/' + resp.userName,
                                     contentType: 'application/json',
                                     headers: {"Authorization": "Bearer " + resp.access_token},
                                     error: function (xhr) {
@@ -187,13 +204,15 @@ var indexFunctions = {
         $("#form-registr").on("submit", function (e) {
             e.preventDefault();
             const form = $(this);
-            form.find("p[class='error']").text("");
+            const waitingPanel = document.getElementById('waiting-panel');
+            waitingPanel.style.visibility = 'visible';
 
             let firstName = form.find("input[name='firstName']");
             let lastName = form.find("input[name='lastName']");
             let email = form.find("input[name='email']");
             let userName = form.find("input[name='userName']");
             let password = form.find("input[name='password']");
+            let confirmPassword = form.find("input[name='confirmPassword']");
             let isValid = true;
 
             const data = {
@@ -201,7 +220,9 @@ var indexFunctions = {
                 lastName: lastName.val(),
                 email: email.val(),
                 userName: userName.val(),
-                password: password.val()
+                password: password.val(),
+                confirmPassword: confirmPassword.val(),
+                lang: document.documentElement.lang.toString()
             }
 
             if (data.firstName.length == 0) {
@@ -239,35 +260,94 @@ var indexFunctions = {
                 password.css("border-color", borderColor);
             }
 
+            if (data.confirmPassword.length == 0) {
+                confirmPassword.css("border-color", "red");
+                isValid = false;
+            } else {
+                confirmPassword.css("border-color", borderColor);
+            }
+
+            if (data.password !== data.confirmPassword) {
+                $(".errorMessage").removeClass("hide");
+                isValid = false;
+            } else {
+                $(".errorMessage").addClass("hide");
+            }
+
             if (!isValid) {
+                waitingPanel.style.visibility = 'hidden';
                 return false;
             }
 
             form.find("button[type='submit']").prop("disabled", true);
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:8089/creat',
+                url: 'http://' + domainName + ':8089/creat',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 success: function (resp) {
                     if (resp) {
                         if (resp.errorText && resp.errorText.length > 0) {
-                            form.find("p[class='error']").text(resp.errorText);
+                            if (resp.errorText.includes("badFirstName")) {
+                                $(".first-name-error").removeClass("hide");
+                            } else {
+                                $(".first-name-error").addClass("hide");
+                            }
+                            if (resp.errorText.includes("badLastName")) {
+                                $(".last-name-error").removeClass("hide");
+                            } else {
+                                $(".last-name-error").addClass("hide");
+                            }
+                            if (resp.errorText.includes("badMail")) {
+                                $(".email-error").removeClass("hide");
+                            } else {
+                                $(".email-error").addClass("hide");
+                            }
+                            if (resp.errorText.includes("badUsername")) {
+                                $(".username-error").removeClass("hide");
+                            } else {
+                                $(".username-error").addClass("hide");
+                            }
+                            if (resp.errorText.includes("badPassword")) {
+                                $(".password-error").removeClass("hide");
+                            } else {
+                                $(".password-error").addClass("hide");
+                            }
+                            if (resp.errorText.includes("emailUsed")) {
+                                $(".email-error-exist").removeClass("hide");
+                            } else {
+                                $(".email-error-exist").addClass("hide");
+                            }
+                            if (resp.errorText.includes("usernameUsed")) {
+                                $(".username-error-exist").removeClass("hide");
+                            } else {
+                                $(".username-error-exist").addClass("hide");
+                            }
                         } else {
+                            $(".email-error-exist").addClass("hide");
+                            $(".username-error-exist").addClass("hide");
+                            $(".first-name-error").addClass("hide");
+                            $(".last-name-error").addClass("hide");
+                            $(".email-error").addClass("hide");
+                            $(".username-error").addClass("hide");
+                            $(".password-error").addClass("hide");
+                            $(".errorMessage").addClass("hide");
                             $(".psy-popup[data-popup='registr']").hide();
                             form.find("input[name='firstName']").val("");
                             form.find("input[name='lastName']").val("");
                             form.find("input[name='email']").val("");
                             form.find("input[name='userName']").val("");
                             form.find("input[name='password']").val("");
-                            localStorage.setItem("userData", JSON.stringify(resp));
+                            $(".psy-popup[data-popup='registerSuccess']").show();
                         }
                     } else {
                         form.find("p[class='error']").text("Something wrong");
                     }
                     form.find("button[type='submit']").prop("disabled", false);
+                    waitingPanel.style.visibility = 'hidden';
                 }
             });
+
         });
         $("#form-createpost").on("submit", async function (e) {
             e.preventDefault();
@@ -319,7 +399,7 @@ var indexFunctions = {
                 form.find("button[type='submit']").prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/post',
+                    url: 'http://' + domainName + ':8089/post',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
@@ -332,8 +412,12 @@ var indexFunctions = {
                                 form.find("input[name='title']").val("");
                                 form.find("input[name='description']").val("");
 
+                                let category = document.documentElement.lang == "hy" ? resp.category[1] :
+                                    document.documentElement.lang == "ru" ? resp.category[2] :
+                                        resp.category[0];
+
                                 let html = '<div class="row" data-id="' + resp.postId + '">' +
-                                    '<div class="td ds-cat" style="width:335px;">' + resp.category + '</div>' +
+                                    '<div class="td ds-cat" style="width:335px;">' + category + '</div>' +
                                     '<div class="td ds-title" style="width:335px;">' + resp.title + '</div>' +
                                     '<div class="td" style="width:335px;">' + self.getDateByFormat(resp.localDateTime, ".") + '</div>' +
                                     '<div class="td ds-status" style="width:335px;">' + resp.status + '</div>' +
@@ -373,7 +457,7 @@ var indexFunctions = {
                 }
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/upload',
+                    url: 'http://' + domainName + ':8089/upload',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
@@ -410,16 +494,16 @@ var indexFunctions = {
             if (data.postCategoryType.length == 0) {
                 category.css("border-color", "red");
                 isValid = false;
-            }else {
+            } else {
                 category.css("border-color", borderColor);
-                            }
-            if (data.postCategoryTypeHy.length == 0){
+            }
+            if (data.postCategoryTypeHy.length == 0) {
                 categoryHy.css("border-color", "red");
                 isValid = false;
-            }else {
+            } else {
                 categoryHy.css("border-color", borderColor);
             }
-            if (data.postCategoryTypeRu.length == 0){
+            if (data.postCategoryTypeRu.length == 0) {
                 categoryRu.css("border-color", "red");
                 isValid = false;
             } else {
@@ -434,7 +518,7 @@ var indexFunctions = {
             const token = localStorage.getItem("token");
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:8089/category',
+                url: 'http://' + domainName + ':8089/category',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 headers: {"Authorization": "Bearer " + token},
@@ -465,12 +549,15 @@ var indexFunctions = {
         $("#form-forgotpass").on("submit", function (e) {
             e.preventDefault();
             const form = $(this);
-            form.find("p[class='error']").text("");
+
             let email = form.find("input[name='email']");
             let isValid = true;
+            const waitingPanel = document.getElementById('waiting-panel');
+            waitingPanel.style.visibility = 'visible';
 
             const data = {
-                email: email.val()
+                email: email.val(),
+                lang: document.documentElement.lang.toString()
             }
 
             if (data.email.length == 0) {
@@ -481,23 +568,29 @@ var indexFunctions = {
             }
 
             if (!isValid) {
+                waitingPanel.style.visibility = 'hidden';
                 return false;
             }
             form.find("button[type='submit']").prop("disabled", true);
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:8089/resetPassword',
+                url: 'http://' + domainName + ':8089/resetPassword',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 success: function (resp) {
                     if (resp) {
                         if (resp.errorText && resp.errorText.length > 0) {
-                            form.find("p[class='error']").text(resp.errorText);
+                            if (resp.errorText.includes("notFound")) {
+                                $(".error").removeClass("hide");
+                            }
                         } else {
-                            window.location.href = "index";
+                            $(".username-error-exist").addClass("hide");
+                            $(".psy-popup[data-popup='forgotpass']").hide();
+                            $(".psy-popup[data-popup='forgotSuccess']").show();
                         }
                     }
                     form.find("button[type='submit']").prop("disabled", false);
+                    waitingPanel.style.visibility = 'hidden';
                 }
             });
         });
@@ -530,8 +623,10 @@ var indexFunctions = {
             }
 
             if (data.password != data.confirmpassword) {
-                form.find("p[class='error']").text("Password and Confirm Password does not match");
+                $(".not-matches").removeClass("hide");
                 isValid = false;
+            } else {
+                $(".not-matches").addClass("hide");
             }
 
             if (!isValid) {
@@ -540,14 +635,17 @@ var indexFunctions = {
             form.find("button[type='submit']").prop("disabled", true);
             $.ajax({
                 type: 'POST',
-                url: 'http://localhost:8089/updatePassword',
+                url: 'http://' + domainName + ':8089/updatePassword',
                 data: JSON.stringify(data),
                 contentType: 'application/json',
                 success: function (resp) {
                     if (resp) {
                         if (resp.errorText && resp.errorText.length > 0) {
-                            form.find("p[class='error']").text(resp.errorText);
+                            if (resp.errorText.includes("badPassword")) {
+                                $(".not-matches-be").removeClass("hide");
+                            }
                         } else {
+                            $(".not-matches-be").addClass("hide");
                             window.location.href = "index";
                         }
                     }
@@ -555,7 +653,75 @@ var indexFunctions = {
                 }
             });
         });
+        $("#form-changeUserPassword").on("submit", function (e) {
+            e.preventDefault();
+            let userData = localStorage.getItem("userData");
+            const token = localStorage.getItem("token");
 
+            const form = $(this);
+            let password = form.find("input[name='password']");
+            let confirmpassword = form.find("input[name='confirmpassword']");
+            let isValid = true;
+            if (userData) {
+                const json = JSON.parse(userData);
+                const data = {
+                    password: password.val(),
+                    confirmPassword: confirmpassword.val(),
+                    userName: json.userName
+                }
+
+                if (data.password.length == 0) {
+                    password.css("border-color", "red");
+                    isValid = false;
+                } else {
+                    password.css("border-color", borderColor);
+                }
+
+                if (data.confirmPassword.length == 0) {
+                    confirmpassword.css("border-color", "red");
+                    isValid = false;
+                } else {
+                    confirmpassword.css("border-color", borderColor);
+                }
+
+
+                if (!isValid) {
+                    return false;
+                }
+                form.find("button[type='submit']").prop("disabled", true);
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://' + domainName + ':8089/changePassword',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    headers: {"Authorization": "Bearer " + token},
+                    success: function (resp) {
+                        if (resp) {
+                            if (resp.errorText && resp.errorText.length > 0) {
+                                if (resp.errorText.includes("Wrong old password")) {
+                                    $(".info").addClass("hide");
+                                    $(".error-message").removeClass("hide");
+                                } else {
+                                    $(".error-message").addClass("hide");
+                                }
+                                if (resp.errorText.includes("badPassword")) {
+                                    $(".error-password").removeClass("hide");
+                                } else {
+                                    $(".error-password").addClass("hide");
+                                }
+                            } else {
+                                $(".error-message").addClass("hide");
+                                $(".error-password").addClass("hide");
+                                $(".info").removeClass("hide");
+                            }
+                            form.find("input[name='password']").val("");
+                            form.find("input[name='confirmpassword']").val("");
+                        }
+                        form.find("button[type='submit']").prop("disabled", false);
+                    }
+                });
+            }
+        });
         //click on row
         $(document).on("click", ".row", function () {
             let row = $(this);
@@ -615,10 +781,10 @@ var indexFunctions = {
                 }
 
                 var status = row.find(".ds-status").text();
-                if (status == "Created") {
+                if (status == "Created" || status == "Ստեղծված" || status == "Создано") {
                     $(".block-forum").removeClass("hide");
                     $(".privet-forum").removeClass("hide");
-                } else if (status == "Private") {
+                } else if (status == "Private" || status == "Անձնական" || status == "Частный") {
                     $(".approve-forum").removeClass("hide");
                 }
             } else if (uri.indexOf("/user/details") > 0) {
@@ -644,7 +810,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/changeRole',
+                    url: 'http://' + domainName + ':8089/changeRole',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
@@ -686,7 +852,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/changeRole',
+                    url: 'http://' + domainName + ':8089/changeRole',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
@@ -728,7 +894,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/updateUser',
+                    url: 'http://' + domainName + ':8089/updateUser',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
@@ -771,7 +937,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/updateUser',
+                    url: 'http://' + domainName + ':8089/updateUser',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
@@ -813,7 +979,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/activatePost',
+                    url: 'http://' + domainName + ':8089/activatePost',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
@@ -823,6 +989,9 @@ var indexFunctions = {
                                 alert(resp.errorText);
                             } else {
                                 var uri = window.location.href;
+                                let status = document.documentElement.lang == "hy" ? "Ստեղծված" :
+                                    document.documentElement.lang == "ru" ? "Создано" :
+                                        "Created";
                                 $(".row-id").val('0');
                                 $(".descr-forum").addClass("hide");
                                 $(".approve-forum").addClass("hide");
@@ -831,7 +1000,7 @@ var indexFunctions = {
                                 if (uri.indexOf("/postsforapproval") > 0) {
                                     $(".row-hover").remove();
                                 } else {
-                                    $(".row-hover").find(".ds-status").text("Created");
+                                    $(".row-hover").find(".ds-status").text(status);
                                 }
                             }
                         } else {
@@ -862,7 +1031,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/blockPost',
+                    url: 'http://' + domainName + ':8089/blockPost',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
@@ -906,7 +1075,7 @@ var indexFunctions = {
                 btn.prop("disabled", true);
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/privatePost',
+                    url: 'http://' + domainName + ':8089/privatePost',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
@@ -915,12 +1084,15 @@ var indexFunctions = {
                             if (resp.errorText && resp.errorText.length > 0) {
                                 alert(resp.errorText);
                             } else {
+                                let status = document.documentElement.lang == "hy" ? "Անձնական" :
+                                    document.documentElement.lang == "ru" ? "Частный" :
+                                        "Private";
                                 $(".row-id").val('0');
                                 $(".descr-forum").addClass("hide");
                                 $(".approve-forum").addClass("hide");
                                 $(".block-forum").addClass("hide");
                                 $(".privet-forum").addClass("hide");
-                                $(".row-hover").find(".ds-status").text("Private");
+                                $(".row-hover").find(".ds-status").text(status);
                             }
                         } else {
                             alert("Something wrong");
@@ -952,7 +1124,7 @@ var indexFunctions = {
 
                     $.ajax({
                         type: 'POST',
-                        url: 'http://localhost:8089/comment',
+                        url: 'http://' + domainName + ':8089/comment',
                         data: JSON.stringify(data),
                         contentType: 'application/json',
                         headers: {"Authorization": "Bearer " + token},
@@ -964,7 +1136,7 @@ var indexFunctions = {
                                     const html = '<div class="comment-box">' +
                                         '<p class="comm-user" style=" display: flex; align-items: center;">' +
                                         '<img src="' + json.imagePath + '" alt="" class="user-navbar" style="margin-right: 10px; border-radius: 20px" ' + '">' +
-                                         json.firstName + ' ' + json.lastName + ' ' + self.shortDateBySymbol(new Date()) + '</p>' +
+                                        json.firstName + ' ' + json.lastName + ' ' + self.shortDateBySymbol(new Date()) + '</p>' +
                                         '<div class="comm-cont" style="margin-top: 10px">' + text + '</div>' +
                                         '</div>';
 
@@ -987,7 +1159,7 @@ var indexFunctions = {
             let btn = $(this);
             let userData = localStorage.getItem("userData");
             const token = localStorage.getItem("token");
-
+            const id = self.getRequestParam('id');
             const data = {
                 title: $(".src-title").val(),
                 categoryId: parseInt($(".src-option").val())
@@ -995,7 +1167,7 @@ var indexFunctions = {
             if (data) {
                 $.ajax({
                     type: 'POST',
-                    url: 'http://localhost:8089/searchPosts',
+                    url: 'http://' + domainName + ':8089/searchPosts',
                     data: JSON.stringify(data),
                     contentType: 'application/json',
                     // headers: { "Authorization": "Bearer " + token },
@@ -1003,16 +1175,23 @@ var indexFunctions = {
                         if (resp) {
                             $(".post-container").html('');
                             resp.forEach(obj => {
+
                                 let category = document.documentElement.lang == "hy" ? obj.category[1] :
                                     document.documentElement.lang == "ru" ? obj.category[2] :
                                         obj.category[0];
+                                let icon = id ? '' : '<div class="navigation" style="width:30px;">' +
+                                    '<a href="/posts?id=' + obj.postId + '"><img src="/images/arrow_right.png" className="img-nav" alt=""></a>' +
+                                    '</div>';
                                 let html = '<div class="post-data">' +
                                     '<div class="post-box" >' +
-                                    '<h3>' + category + ' (' + obj.title + ')</h3>' +
-                                    '<img src="' + obj.imagePath + '" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">' +
+                                    '<div style="display: flex; justify-content: space-between;">' +
+                                    '<h3>' + category + ' (' + obj.title + ')' + '</h3>' +
+                                    icon +
+                                    '</div>' +
                                     '<p class="post-user"  style=" display: flex; align-items: center;">' +
                                     '<img src="' + obj.userImg + '" alt="" class="user-navbar" style="margin-right: 10px; border-radius: 20px" ' + (obj.userImg ? null : "hide") + '">' +
                                     obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
+                                    '<img src="' + obj.imagePath + '" alt="" class="post-img ' + (obj.imagePath ? null : "hide") + '">' +
                                     '<span class="post-decription" style="margin-top: 10px">' + obj.descriptionPath + '</span>' +
                                     '</div>' +
                                     '<div class="comment-container">' + self.getCommentList(obj.comments) + '</div>' +
@@ -1050,7 +1229,7 @@ var indexFunctions = {
         if (userData) {
 
             const json = JSON.parse(userData);
-
+            console.log(json)
             if (json.imagePath !== null && json.imagePath.toString().trim().length > 0) {
                 document.getElementById("userImg").src = json.imagePath;
             }
@@ -1067,7 +1246,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8089/getAllAdmins/',
+                    url: 'http://' + domainName + ':8089/getAllAdmins/',
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
@@ -1097,7 +1276,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8089/getAllUsers',
+                    url: 'http://' + domainName + ':8089/getAllUsers',
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
@@ -1127,7 +1306,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8089/waitingPosts',
+                    url: 'http://' + domainName + ':8089/waitingPosts',
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
@@ -1157,7 +1336,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8089/getPostsByUserName/' + json.userName,
+                    url: 'http://' + domainName + ':8089/getPostsByUserName/' + json.userName,
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
@@ -1166,11 +1345,30 @@ var indexFunctions = {
                                 let category = document.documentElement.lang == "hy" ? obj.category[1] :
                                     document.documentElement.lang == "ru" ? obj.category[2] :
                                         obj.category[0];
+                                let status;
+                                if (obj.status.includes("Waiting")) {
+                                    status = document.documentElement.lang == "hy" ? "Ընթացքի մեջ" :
+                                        document.documentElement.lang == "ru" ? "В процессе" :
+                                            "In progress";
+                                } else if (obj.status.includes("Created")) {
+                                    status = document.documentElement.lang == "hy" ? "Ստեղծված" :
+                                        document.documentElement.lang == "ru" ? "Создано" :
+                                            "Created";
+                                } else if (obj.status.includes("Blocked")) {
+                                    status = document.documentElement.lang == "hy" ? "Արգելափակված" :
+                                        document.documentElement.lang == "ru" ? "Заблокировано" :
+                                            "Blocked";
+                                } else if (obj.status.includes("Private")) {
+                                    status = document.documentElement.lang == "hy" ? "Անձնական" :
+                                        document.documentElement.lang == "ru" ? "Частный" :
+                                            "Private";
+                                }
+                                console.log(obj.status)
                                 let html = '<div class="row" data-id="' + obj.postId + '">' +
                                     '<div class="td ds-cat" style="width:335px;">' + category + '</div>' +
                                     '<div class="td ds-title" style="width:335px;">' + obj.title + '</div>' +
                                     '<div class="td" style="width:335px;">' + self.getDateByFormat(obj.localDateTime, ".") + '</div>' +
-                                    '<div class="td ds-status" style="width:335px;">' + obj.status + '</div>' +
+                                    '<div class="td ds-status" style="width:335px;">' + status + '</div>' +
                                     '<div class="td navigation" style="width:30px;">' + self.getCursoreImage(obj.status, obj.postId) + '</div>' +
                                     '<input type="hidden" class="pst-desc" value="' + obj.descriptionPath + '" />' +
                                     '<input type="hidden" class="pst-img" value="' + obj.imagePath + '" />' +
@@ -1192,7 +1390,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8089/createdPosts' + idParam,
+                    url: 'http://' + domainName + ':8089/createdPosts' + idParam,
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
@@ -1201,15 +1399,15 @@ var indexFunctions = {
                                 let category = document.documentElement.lang == "hy" ? obj.category[1] :
                                     document.documentElement.lang == "ru" ? obj.category[2] :
                                         obj.category[0];
-                                let icon = id ? '':'<div class="navigation" style="width:30px;">' +
+                                let icon = id ? '' : '<div class="navigation" style="width:30px;">' +
                                     '<a href="/posts?id=' + obj.postId + '"><img src="/images/arrow_right.png" className="img-nav" alt=""></a>' +
                                     '</div>';
                                 let html = '<div class="post-data">' +
                                     '<div class="post-box" >' +
-                                    '<div style="display: flex; justify-content: space-between;">'+
+                                    '<div style="display: flex; justify-content: space-between;">' +
                                     '<h3>' + category + ' (' + obj.title + ')' + '</h3>' +
-                                     icon +
-                                    '</div>'+
+                                    icon +
+                                    '</div>' +
                                     '<p class="post-user"  style=" display: flex; align-items: center;">' +
                                     '<img src="' + obj.userImg + '" alt="" class="user-navbar" style="margin-right: 10px; border-radius: 20px" ' + (obj.userImg ? null : "hide") + '">' +
                                     obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
@@ -1232,7 +1430,7 @@ var indexFunctions = {
                 $(".src-option").append(new Option('', '0'));
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8089/allCategory',
+                    url: 'http://' + domainName + ':8089/allCategory',
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
@@ -1240,8 +1438,8 @@ var indexFunctions = {
                             resp.forEach(obj => {
                                 $(".src-option").append(new Option(
                                     document.documentElement.lang == "hy" ? obj.postCategoryTypeHy :
-                                    document.documentElement.lang == "ru" ? obj.postCategoryTypeRu :
-                                        obj.postCategoryType, obj.id));
+                                        document.documentElement.lang == "ru" ? obj.postCategoryTypeRu :
+                                            obj.postCategoryType, obj.id));
                             });
                         }
                     }
@@ -1249,8 +1447,6 @@ var indexFunctions = {
 
             } else if (uri.indexOf("/categories") > 0) {
                 $(".th").css("width", "1340px");
-                // $(".psy-footer").css("position", "absolute");
-                // $(".psy-footer").css("bottom", "0");
 
                 if (json.role != 0) {
                     window.location.href = "index";
@@ -1259,7 +1455,7 @@ var indexFunctions = {
 
                 $.ajax({
                     type: 'GET',
-                    url: 'http://localhost:8089/allCategory',
+                    url: 'http://' + domainName + ':8089/allCategory',
                     contentType: 'application/json',
                     headers: {"Authorization": "Bearer " + token},
                     success: function (resp) {
@@ -1282,12 +1478,14 @@ var indexFunctions = {
                 if (json.imagePath !== null && json.imagePath.length > 0 && json.imagePath.toString().trim().length > 0) {
                     document.getElementById("userBigImg").src = json.imagePath;
                 }
+                let fulName = json.firstName + " " + json.lastName;
+                document.getElementById("fullName").textContent = fulName;
+                document.getElementById("email").textContent = json.email;
+                document.getElementById("post").textContent = json.postCount;
+                document.getElementById("comment").textContent = json.commentCount;
             }
 
         }
-            // else if (uri.indexOf("index") == -1) {
-            //     // window.location.href = "index";
-        // }
         else if (uri.indexOf("/posts") > 0) {
             let idParam = "";
             const id = self.getRequestParam('id');
@@ -1296,7 +1494,7 @@ var indexFunctions = {
             }
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8089/createdPosts' + idParam,
+                url: 'http://' + domainName + ':8089/createdPosts' + idParam,
                 contentType: 'application/json',
 
                 success: function (resp) {
@@ -1305,15 +1503,15 @@ var indexFunctions = {
                             let category = document.documentElement.lang == "hy" ? obj.category[1] :
                                 document.documentElement.lang == "ru" ? obj.category[2] :
                                     obj.category[0];
-                            let icon = id ? '':'<div class="navigation" style="width:30px;">' +
+                            let icon = id ? '' : '<div class="navigation" style="width:30px;">' +
                                 '<a href="/posts?id=' + obj.postId + '"><img src="/images/arrow_right.png" className="img-nav" alt=""></a>' +
                                 '</div>';
                             let html = '<div class="post-data">' +
                                 '<div class="post-box" >' +
-                                '<div style="display: flex; justify-content: space-between;">'+
+                                '<div style="display: flex; justify-content: space-between;">' +
                                 '<h3>' + category + ' (' + obj.title + ')' + '</h3>' +
-                                 icon +
-                                '</div>'+
+                                icon +
+                                '</div>' +
                                 '<p class="post-user"  style=" display: flex; align-items: center;">' +
                                 '<img src="' + obj.userImg + '" alt="" class="user-navbar" style="margin-right: 10px; border-radius: 20px" ' + (obj.userImg ? null : "hide") + '">' +
                                 obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
@@ -1333,7 +1531,7 @@ var indexFunctions = {
             $(".src-option").append(new Option('', '0'));
             $.ajax({
                 type: 'GET',
-                url: 'http://localhost:8089/allCategory',
+                url: 'http://' + domainName + ':8089/allCategory',
                 contentType: 'application/json',
 
                 success: function (resp) {
@@ -1341,8 +1539,8 @@ var indexFunctions = {
                         resp.forEach(obj => {
                             $(".src-option").append(new Option(
                                 document.documentElement.lang == "hy" ? obj.postCategoryTypeHy :
-                                document.documentElement.lang == "ru" ? obj.postCategoryTypeRu :
-                                    obj.postCategoryType, obj.id));
+                                    document.documentElement.lang == "ru" ? obj.postCategoryTypeRu :
+                                        obj.postCategoryType, obj.id));
                         });
                     }
                 }
@@ -1351,11 +1549,13 @@ var indexFunctions = {
         } else {
             if (uri.indexOf("forgot=true") > -1) {
                 $(".psy-popup[data-popup='forgotpass']").show();
-            } else if (uri.indexOf("token=") > -1) {
-                $(".psy-popup[data-popup='changepassword']").show();
-            } else if (uri.indexOf("/admins") > 0 || uri.indexOf("/categories") > 0 ||
-                uri.indexOf("/users") > 0 || uri.indexOf("/postsforapproval") > 0 || uri.indexOf("/myposts") > 0) {
-                window.location.href = "index";
+            }
+                // else if (uri.indexOf("index?token=") > -1) {
+                //     $(".psy-popup[data-popup='changepassword']").show();
+            // }
+            else if (uri.indexOf("/admins") > 0 || uri.indexOf("/categories") > 0 ||
+                uri.indexOf("/users") > 0 || uri.indexOf("/postsforapproval") > 0 || uri.indexOf("/myposts") > 0 || uri.indexOf("/user/details") > 0) {
+                window.location = "http://" + domainName + ":8089/index";
             }
         }
     },
@@ -1377,7 +1577,7 @@ var indexFunctions = {
         localStorage.removeItem("username");
         localStorage.removeItem("token");
         if (isRedirect) {
-            window.location.href = "index";
+            window.location = "http://" + domainName + ":8089/index";
         }
     },
     logIn: function (data) {
@@ -1473,10 +1673,10 @@ var indexFunctions = {
                 obj.firstName + ' ' + obj.lastName + ' ' + self.getDateByFormat(obj.localDateTime, ".") + '</p>' +
                 '<div class="comm-cont" style="margin-top: 10px;">' + obj.comment + '</div>' +
                 '</div>';
-            if (!document.documentURI.toString().includes("id")){
+            if (!document.documentURI.toString().includes("id")) {
                 $(".src-block").removeClass("hide");
                 return html;
-            }else {
+            } else {
                 $(".src-block").addClass("hide");
             }
         }
@@ -1489,7 +1689,7 @@ var indexFunctions = {
     },
     getCursoreImage: function (status, postId) {
         var self = this;
-        if (status == "Waiting" || status == "Blocked" ) {
+        if (status == "Waiting" || status == "Blocked") {
             return "";
         } else {
             return '<a href="/posts?id=' + postId + '"><img src="/images/arrow_right.png" class="img-nav" alt=""></a>';

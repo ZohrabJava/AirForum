@@ -1,31 +1,30 @@
 package com.example.airforum.service.impl;
 
-import com.example.airforum.convertor.UserConvertor;
 import com.example.airforum.dto.userDto.UserRequestDto;
 import com.example.airforum.dto.userDto.UserResponseDto;
 import com.example.airforum.dto.userDto.UserUpdateRequestDto;
 import com.example.airforum.dto.userDto.UserUpdateResponseDto;
 import com.example.airforum.email.EmailSender;
 import com.example.airforum.enams.Roles;
+import com.example.airforum.model.Post;
+import com.example.airforum.model.PostComment;
 import com.example.airforum.model.User;
+import com.example.airforum.repository.PostCommentRepository;
+import com.example.airforum.repository.PostRepository;
 import com.example.airforum.repository.UserRepository;
 import com.example.airforum.service.UserService;
-import com.example.airforum.service.token.ConfirmationToken;
-import com.example.airforum.service.token.ConfirmationTokenRepository;
-import com.example.airforum.service.token.ConfirmationTokenService;
+import com.example.airforum.service.token.*;
 import com.example.airforum.util.Path;
 import com.example.airforum.validator.EmailValidator;
 import com.example.airforum.validator.RegisterValidator;
 import lombok.AllArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -37,21 +36,25 @@ public class UserServiceImpl implements UserService {
     private final EmailSender emailSender;
     private final ConfirmationTokenRepository confirmationTokenRepository;
     private final UserRepository userRepository;
-    private final UserConvertor userConvertor;
     private final PasswordEncoder passwordEncoder;
-
     private final ConfirmationTokenService confirmationTokenService;
+    private final ResetTokenService resetTokenService;
+    private final PostRepository postRepository;
+    private final PostCommentRepository postCommentRepository;
+    private final MessageSource messageSource;
+        private final String DOMAIN = "localhost";
+//    private final String DOMAIN = "10.5.113.18";
 
     @Override
     public UserUpdateResponseDto creatUser(UserRequestDto request) {
 
         UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
         if (userRepository.getUserByEmail(request.getEmail()) != null) {
-            userUpdateResponseDto.setErrorText("Wrong mail");
+            userUpdateResponseDto.setErrorText("emailUsed");
             return userUpdateResponseDto;
         }
         if (userRepository.getUserByUserName(request.getUserName()) != null) {
-            userUpdateResponseDto.setErrorText("Wrong user name");
+            userUpdateResponseDto.setErrorText("usernameUsed");
             return userUpdateResponseDto;
         }
         if (RegisterValidator.isValidForm(request) != null) {
@@ -76,26 +79,39 @@ public class UserServiceImpl implements UserService {
                 )
         );
 
-        String link = "http://localhost:8089/confirm?token=" + token;
+        String link = "http://" + DOMAIN + ":8089/confirm?token=" + token;
         emailSender.send(
                 request.getEmail(),
-                buildEmail(request.getFirstName(), link));
+                buildEmail(request.getFirstName(), link, request.getLang()));
 
         return userUpdateResponseDto;
     }
 
     @Override
-    public UserUpdateResponseDto resetPassword(String email) {
+    public UserUpdateResponseDto resetPassword(UserUpdateRequestDto dto) {
         UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
-        User user = userRepository.getUserByEmail(email);
+        User user = userRepository.getUserByEmail(dto.getEmail());
         if (user == null) {
-            userUpdateResponseDto.setErrorText("Wrong email");
+            userUpdateResponseDto.setErrorText("notFound");
             return userUpdateResponseDto;
         }
-        String link = "http://localhost:8089/index?token=" + confirmationTokenService.getTokenByUserId(user.getId());
+
+        String token = UUID.randomUUID().toString();
+
+        ResetToken confirmationToken = new ResetToken(
+                token,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusDays(3),
+                user
+        );
+
+        resetTokenService.saveConfirmationToken(
+                confirmationToken);
+
+        String link = "http://" + DOMAIN + ":8089/reset?token=" + token;
         emailSender.send(
-                email,
-                resetPassword(user.getFirstName(), link));
+                dto.getEmail(),
+                resetPassword(user.getFirstName(), link, dto.getLang()));
         return userUpdateResponseDto;
     }
 
@@ -106,29 +122,64 @@ public class UserServiceImpl implements UserService {
             userUpdateResponseDto.setErrorText("Bad request");
             return userUpdateResponseDto;
         }
-        ConfirmationToken confirmationToken = confirmationTokenService.findConfirmationTokenByToken(token);
-        if (confirmationToken == null) {
+        ResetToken resetToken = resetTokenService.findConfirmationTokenByToken(token);
+        if (resetToken == null) {
             userUpdateResponseDto.setErrorText("User not found");
             return userUpdateResponseDto;
         }
-        User user = confirmationToken.getUser();
+        User user = resetToken.getUser();
         if (user == null) {
             userUpdateResponseDto.setErrorText("User not found");
             return userUpdateResponseDto;
         }
 
+        if (!password.matches(RegisterValidator.PASSWORD_REGEX)){
+            userUpdateResponseDto.setErrorText("badPassword");
+            return userUpdateResponseDto;
+        }
         String encodedPassword = passwordEncoder
                 .encode(password);
 
         user.setPassword(encodedPassword);
         userRepository.save(user);
+        resetToken.setConfirmedAt(LocalDateTime.now());
+        resetTokenService.saveConfirmationToken(resetToken);
+        return userUpdateResponseDto;
+    }
+
+    @Override
+    public UserUpdateResponseDto changeUserPassword(UserUpdateRequestDto dto) {
+        UserUpdateResponseDto userUpdateResponseDto = new UserUpdateResponseDto();
+        if (dto.getUserName() == null && dto.getPassword() == null) {
+            userUpdateResponseDto.setErrorText("Bad request");
+            return userUpdateResponseDto;
+        }
+
+
+        User user = userRepository.getUserByUserName(dto.getUserName());
+        if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+            if (!dto.getConfirmPassword().matches(RegisterValidator.PASSWORD_REGEX)){
+                userUpdateResponseDto.setErrorText("badPassword");
+                return userUpdateResponseDto;
+            }
+            String encodedPassword = passwordEncoder
+                    .encode(dto.getConfirmPassword());
+
+            user.setPassword(encodedPassword);
+            userRepository.save(user);
+        } else {
+            userUpdateResponseDto.setErrorText("Wrong old password");
+            return userUpdateResponseDto;
+        }
+
+
         return userUpdateResponseDto;
     }
 
     @Override
     public UserResponseDto getByUserName(String userName) {
         Optional<User> user = userRepository.findByUserName(userName);
-        return userConvertor.toUserDto(user.get());
+        return toUserDto(user.get());
 
     }
 
@@ -147,7 +198,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto getById(Long id) {
         User user = userRepository.getUserById(id);
-        return userConvertor.toUserDto(user);
+        return toUserDto(user);
     }
 
     @Override
@@ -155,7 +206,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.getAllByRoles(Roles.USER);
         List<UserResponseDto> userResponseDto = new ArrayList<>();
         for (User user : users) {
-            userResponseDto.add(userConvertor.toUserDto(user));
+            userResponseDto.add(toUserDto(user));
         }
         return userResponseDto;
     }
@@ -165,7 +216,7 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.getAllByRoles(Roles.ADMIN);
         List<UserResponseDto> userResponseDto = new ArrayList<>();
         for (User user : users) {
-            userResponseDto.add(userConvertor.toUserDto(user));
+            userResponseDto.add(toUserDto(user));
         }
         return userResponseDto;
     }
@@ -244,9 +295,6 @@ public class UserServiceImpl implements UserService {
                 .isPresent();
 
         if (userExists) {
-            // TODO check of attributes are the same and
-            // TODO if email not confirmed send confirmation email.
-
             throw new IllegalStateException("email already taken");
         }
 
@@ -262,19 +310,17 @@ public class UserServiceImpl implements UserService {
         ConfirmationToken confirmationToken = new ConfirmationToken(
                 token,
                 LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(999999999),
+                LocalDateTime.now().plusDays(3),
                 user
         );
 
         confirmationTokenService.saveConfirmationToken(
                 confirmationToken);
 
-//        TODO: SEND EMAIL
-
         return token;
     }
 
-    public String resetPassword(String name, String link) {
+    public String resetPassword(String name, String link, String lang) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
@@ -292,7 +338,9 @@ public class UserServiceImpl implements UserService {
                 "                  \n" +
                 "                    </td>\n" +
                 "                    <td style=\"font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
-                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Reset password</span>\n" +
+                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">"
+                + messageSource.getMessage("email.reset_title", null, new Locale(lang)) +
+                "</span>\n" +
                 "                    </td>\n" +
                 "                  </tr>\n" +
                 "                </tbody></table>\n" +
@@ -330,7 +378,15 @@ public class UserServiceImpl implements UserService {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hi " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">You are forgot your password  , if you want to reset go to the link </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Reset Now</a> </p></blockquote>\n  <p>See you soon</p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">"
+                + messageSource.getMessage("email.confirm_hi", null, new Locale(lang)) +
+                " " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">"
+                + messageSource.getMessage("email.reset_text_1", null, new Locale(lang)) +
+                " </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">"
+                + messageSource.getMessage("email.reset", null, new Locale(lang)) +
+                "</a> </p></blockquote>\n  <p>"
+                + messageSource.getMessage("email.confirm_text_2", null, new Locale(lang)) +
+                "</p>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -343,7 +399,7 @@ public class UserServiceImpl implements UserService {
                 "</div></div>";
     }
 
-    public String buildEmail(String name, String link) {
+    public String buildEmail(String name, String link, String lang) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
@@ -361,7 +417,9 @@ public class UserServiceImpl implements UserService {
                 "                  \n" +
                 "                    </td>\n" +
                 "                    <td style=\"font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px\">\n" +
-                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">Confirm your email</span>\n" +
+                "                      <span style=\"font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block\">"
+                + messageSource.getMessage("email.confirm_title", null, new Locale(lang)) +
+                "</span>\n" +
                 "                    </td>\n" +
                 "                  </tr>\n" +
                 "                </tbody></table>\n" +
@@ -399,7 +457,11 @@ public class UserServiceImpl implements UserService {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hi " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Thank you for registering. Please click on the below link to activate your account: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n Link will expire in 15 minutes. <p>See you soon</p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">"
+                + messageSource.getMessage("email.confirm_hi", null, new Locale(lang)) + " " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> "
+                + messageSource.getMessage("email.confirm_text_1", null, new Locale(lang)) + " </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">"
+                + messageSource.getMessage("email.confirm_activate", null, new Locale(lang)) + "</a> </p></blockquote>\n "
+                + messageSource.getMessage("email.confirm_text_2", null, new Locale(lang)) +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -414,28 +476,57 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public String confirmToken(String token) {
-        ConfirmationToken confirmationToken = confirmationTokenService
-                .getToken(token)
-                .orElseThrow(() ->
-                        new IllegalStateException("token not found"));
+        try {
+            ConfirmationToken confirmationToken = confirmationTokenService
+                    .getToken(token)
+                    .orElseThrow(() ->
+                            new IllegalStateException("token not found"));
 
-        if (confirmationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("email already confirmed");
+            if (confirmationToken.getConfirmedAt() != null) {
+                return "confirmed";
+            }
+
+            LocalDateTime expiredAt = confirmationToken.getExpiresAt();
+
+            if (expiredAt.isBefore(LocalDateTime.now())) {
+                User user = confirmationToken.getUser();
+                confirmationTokenRepository.delete(confirmationToken);
+                userRepository.delete(user);
+                return "expired";
+            }
+
+            confirmationTokenService.setConfirmedAt(token);
+            enableAppUser(
+                    confirmationToken.getUser().getEmail());
+            return "success";
+        } catch (Exception e) {
+            return "notFound";
         }
 
-        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
+    }
 
-        if (expiredAt.isBefore(LocalDateTime.now())) {
-            User user = confirmationToken.getUser();
-            confirmationTokenRepository.delete(confirmationToken);
-            userRepository.delete(user);
-            return "expired";
+    public String resetTokenState(String token) {
+        try {
+            ResetToken resetToken = resetTokenService
+                    .getToken(token)
+                    .orElseThrow(() ->
+                            new IllegalStateException("token not found"));
+
+            if (resetToken.getConfirmedAt() != null) {
+                return "confirmed";
+            }
+
+            LocalDateTime expiredAt = resetToken.getExpiresAt();
+
+            if (expiredAt.isBefore(LocalDateTime.now())) {
+                return "expired";
+            }
+
+            return "success";
+
+        } catch (Exception e) {
+            return "notFound";
         }
-
-        confirmationTokenService.setConfirmedAt(token);
-        enableAppUser(
-                confirmationToken.getUser().getEmail());
-        return "confirmed";
     }
 
     public int enableAppUser(String email) {
@@ -455,11 +546,36 @@ public class UserServiceImpl implements UserService {
             String path = Path.updateImage(user.getImagePath(), imageDataString);
             user.setImagePath(path);
         }
-//        if (imageDataString.split(","))//Todo validation
 
 
         userRepository.save(user);
-        dto = userConvertor.toUserDto(user);
+        dto = toUserDto(user);
         return dto;
+    }
+
+    @Override
+    public int getPostCount(long userId) {
+        List<Post> posts = postRepository.getPostByUserId(userId);
+        return posts.size() ;
+    }
+
+    @Override
+    public int getCommentCount(long userId) {
+        List<PostComment> comments = postCommentRepository.getAllByUserId(userId);
+        return comments.size();
+    }
+    public  UserResponseDto toUserDto(User user) {
+        UserResponseDto userResponseDto = new UserResponseDto();
+        userResponseDto.setUserId(user.getId());
+        userResponseDto.setFirstName(user.getFirstName());
+        userResponseDto.setLastName(user.getLastName());
+        userResponseDto.setUserName(user.getUserName());
+        userResponseDto.setEmail(user.getEmail());
+        userResponseDto.setVerification(user.getEnabled());
+        userResponseDto.setRole(user.getRoles().ordinal());
+        userResponseDto.setImagePath(user.getImagePath() == null ?  Path.readPath("src\\main\\resources\\static\\profile\\userJpg") : Path.readPath(user.getImagePath()));
+        userResponseDto.setCommentCount(getCommentCount(user.getId()));
+        userResponseDto.setPostCount(getPostCount(user.getId()));
+        return userResponseDto;
     }
 }

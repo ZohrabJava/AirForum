@@ -21,9 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping()
 @AllArgsConstructor
-public class
-
-UserController {
+public class UserController {
 
     private final UserService userService;
 
@@ -39,7 +37,7 @@ UserController {
 
     @PostMapping("/resetPassword")
     public UserUpdateResponseDto resetPassword(@RequestBody UserUpdateRequestDto userUpdateRequestDto) {
-        return userService.resetPassword(userUpdateRequestDto.getEmail());
+        return userService.resetPassword(userUpdateRequestDto);
     }
 
     @PostMapping("/updatePassword")
@@ -47,7 +45,10 @@ UserController {
         return userService.updateUserPassword(userUpdateRequestDto.getToken(), userUpdateRequestDto.getPassword());
     }
 
-
+    @PostMapping("/changePassword")
+    public UserUpdateResponseDto changePassword(@RequestBody UserUpdateRequestDto userUpdateRequestDto) {
+        return userService.changeUserPassword(userUpdateRequestDto);
+    }
     @GetMapping("/user/{username}")
     public UserResponseDto getUserByUserName(@PathVariable("username") String name) {
 

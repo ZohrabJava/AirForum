@@ -13,5 +13,6 @@ public interface PostRepository  extends JpaRepository<Post,Long> {
     List<Post> getAllByPostState(PostState postState);
     List<Post> getAllByUserId(Long id);
     List<Post> getPostByUserUserName(String name);
+    List<Post> getPostByUserId(long id);
     List<Post> getPostByTitleContains(String title);
 }
