@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     private final PostRepository postRepository;
     private final PostCommentRepository postCommentRepository;
     private final MessageSource messageSource;
-        private final String DOMAIN = "localhost";
+    private final String DOMAIN = "localhost";
 //    private final String DOMAIN = "10.5.113.18";
 
     @Override
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
             return userUpdateResponseDto;
         }
 
-        if (!password.matches(RegisterValidator.PASSWORD_REGEX)){
+        if (!password.matches(RegisterValidator.PASSWORD_REGEX)) {
             userUpdateResponseDto.setErrorText("badPassword");
             return userUpdateResponseDto;
         }
@@ -158,7 +158,7 @@ public class UserServiceImpl implements UserService {
 
         User user = userRepository.getUserByUserName(dto.getUserName());
         if (passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            if (!dto.getConfirmPassword().matches(RegisterValidator.PASSWORD_REGEX)){
+            if (!dto.getConfirmPassword().matches(RegisterValidator.PASSWORD_REGEX)) {
                 userUpdateResponseDto.setErrorText("badPassword");
                 return userUpdateResponseDto;
             }
@@ -556,7 +556,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public int getPostCount(long userId) {
         List<Post> posts = postRepository.getPostByUserId(userId);
-        return posts.size() ;
+        return posts.size();
     }
 
     @Override
@@ -564,7 +564,8 @@ public class UserServiceImpl implements UserService {
         List<PostComment> comments = postCommentRepository.getAllByUserId(userId);
         return comments.size();
     }
-    public  UserResponseDto toUserDto(User user) {
+
+    public UserResponseDto toUserDto(User user) {
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setUserId(user.getId());
         userResponseDto.setFirstName(user.getFirstName());
@@ -573,7 +574,7 @@ public class UserServiceImpl implements UserService {
         userResponseDto.setEmail(user.getEmail());
         userResponseDto.setVerification(user.getEnabled());
         userResponseDto.setRole(user.getRoles().ordinal());
-        userResponseDto.setImagePath(user.getImagePath() == null ?  Path.readPath("src\\main\\resources\\static\\profile\\userJpg") : Path.readPath(user.getImagePath()));
+        userResponseDto.setImagePath(user.getImagePath() == null ? Path.readPath("src\\main\\resources\\static\\profile\\userJpg") : Path.readPath(user.getImagePath()));
         userResponseDto.setCommentCount(getCommentCount(user.getId()));
         userResponseDto.setPostCount(getPostCount(user.getId()));
         return userResponseDto;

@@ -94,7 +94,7 @@
                     <img id="userBigImg" th:src="@{/images/user.jpg}" alt="" class="user-img"/>
                     <button id="user-picture-text" class="psy-btn primary thick"
                             style="margin-top: 10px;width: 250px; justify-content: center; ">
-                        <span class="psy-btn-text" onclick="upload()"> Change user picture</span>
+                        <span class="psy-btn-text" onclick="upload()" th:text="#{user.picture}"></span>
                     </button>
                     <div class="content m-top-4">
                         <form id="form-userprofile" autocomplete="off" method="post" enctype="multipart/form-data">

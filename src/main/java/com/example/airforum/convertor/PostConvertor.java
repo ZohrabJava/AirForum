@@ -34,7 +34,6 @@ public class PostConvertor {
                 Path.savePath(postRequestDto.getImagePath(),
                         userRepository.getUserByUserName(postRequestDto.getUserName())),
                 PostState.Waiting,
-                AnswerState.NOT_ANSWERED,
                 LocalDateTime.now(),
                 categoryRepository.getCategoryById(postRequestDto.getCategoryId()));
         return post;

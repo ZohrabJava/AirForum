@@ -416,11 +416,30 @@ var indexFunctions = {
                                     document.documentElement.lang == "ru" ? resp.category[2] :
                                         resp.category[0];
 
+                                let status;
+                                if (resp.status.includes("Waiting")) {
+                                    status = document.documentElement.lang == "hy" ? "Ընթացքի մեջ" :
+                                        document.documentElement.lang == "ru" ? "В процессе" :
+                                            "In progress";
+                                } else if (resp.status.includes("Created")) {
+                                    status = document.documentElement.lang == "hy" ? "Ստեղծված" :
+                                        document.documentElement.lang == "ru" ? "Создано" :
+                                            "Created";
+                                } else if (resp.status.includes("Blocked")) {
+                                    status = document.documentElement.lang == "hy" ? "Արգելափակված" :
+                                        document.documentElement.lang == "ru" ? "Заблокировано" :
+                                            "Blocked";
+                                } else if (resp.status.includes("Private")) {
+                                    status = document.documentElement.lang == "hy" ? "Անձնական" :
+                                        document.documentElement.lang == "ru" ? "Частный" :
+                                            "Private";
+                                }
+
                                 let html = '<div class="row" data-id="' + resp.postId + '">' +
                                     '<div class="td ds-cat" style="width:335px;">' + category + '</div>' +
                                     '<div class="td ds-title" style="width:335px;">' + resp.title + '</div>' +
                                     '<div class="td" style="width:335px;">' + self.getDateByFormat(resp.localDateTime, ".") + '</div>' +
-                                    '<div class="td ds-status" style="width:335px;">' + resp.status + '</div>' +
+                                    '<div class="td ds-status" style="width:335px;">' + status + '</div>' +
                                     '<div class="td navigation" style="width:30px;">' + self.getCursoreImage(resp.status, resp.postId) + '</div>' +
                                     '<input type="hidden" class="pst-desc" value="' + resp.descriptionPath + '" />' +
                                     '<input type="hidden" class="pst-img" value="' + resp.imagePath + '" />' +
@@ -1363,7 +1382,6 @@ var indexFunctions = {
                                         document.documentElement.lang == "ru" ? "Частный" :
                                             "Private";
                                 }
-                                console.log(obj.status)
                                 let html = '<div class="row" data-id="' + obj.postId + '">' +
                                     '<div class="td ds-cat" style="width:335px;">' + category + '</div>' +
                                     '<div class="td ds-title" style="width:335px;">' + obj.title + '</div>' +

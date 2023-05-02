@@ -33,9 +33,7 @@ public class Post implements Serializable {
     @Enumerated(EnumType.STRING)
     @Column(name = "post_state", nullable = false)
     private PostState postState;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "answer_state", nullable = false)
-    private AnswerState answerState;
+
     @Column(name = "post_date", nullable = false)
     private LocalDateTime localDateTime;
 
@@ -44,7 +42,6 @@ public class Post implements Serializable {
                 String descriptionPath,
                 String imagePath,
                 PostState postState,
-                AnswerState answerState,
                 LocalDateTime localDateTime,
                 Category category) {
         this.user = user;
@@ -52,7 +49,6 @@ public class Post implements Serializable {
         this.descriptionPath = descriptionPath;
         this.imagePath = imagePath;
         this.postState = postState;
-        this.answerState = answerState;
         this.localDateTime = localDateTime;
         this.category = category;
     }
@@ -107,14 +103,6 @@ public class Post implements Serializable {
 
     public void setPostState(PostState postState) {
         this.postState = postState;
-    }
-
-    public AnswerState getAnswerState() {
-        return answerState;
-    }
-
-    public void setAnswerState(AnswerState answerState) {
-        this.answerState = answerState;
     }
 
     public LocalDateTime getLocalDateTime() {
